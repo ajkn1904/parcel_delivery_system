@@ -4,12 +4,12 @@ export default function Logo() {
 
   <defs>
     <linearGradient id="gradBlue" x1="0%" y1="0%" x2="70%" y2="0%">
-      <stop offset="0%" stop-color="#3B82F6"/>
-      <stop offset="100%" stop-color="#1E40AF"/>
+      <stop offset="0%" stopColor="#3B82F6"/>
+      <stop offset="100%" stopColor="#1E40AF"/>
     </linearGradient>
     <linearGradient id="gradOrange" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F59E0B"/>
-      <stop offset="100%" stop-color="#D97706"/>
+      <stop offset="0%" stopColor="#F59E0B"/>
+      <stop offset="100%" stopColor="#D97706"/>
     </linearGradient>
   </defs>
 
@@ -31,10 +31,10 @@ export default function Logo() {
   </g>
 
   {/* <!-- Wordmark --> */}
-  <text x="2" y="45" font-family="Poppins, Inter, sans-serif" font-size="9" font-weight="800" fill="url(#gradBlue)" letter-spacing="0.5">
+  <text x="2" y="45" fontFamily="Poppins, Inter, sans-serif" fontSize="9" fontWeight="800" fill="url(#gradBlue)" letterSpacing="0.5">
     PARCELGO``
   </text>
-  <text x="5" y="50" font-family="Inter, sans-serif" font-size="4" fill="url(#gradOrange)" letter-spacing="1">
+  <text x="5" y="50" fontFamily="Inter, sans-serif" fontSize="4" fill="url(#gradOrange)" letterSpacing="1">
     FAST • RELIABLE • GLOBAL
   </text>
 </svg>
