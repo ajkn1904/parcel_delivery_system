@@ -1,5 +1,5 @@
 import App from '@/App'
-import Dashboard from '@/components/layout/Dashboard'
+import { role } from '@/constants/role'
 import About from '@/pages/About'
 import Contact from '@/pages/Contact'
 import FAQ from '@/pages/FAQ'
@@ -7,7 +7,14 @@ import Features from '@/pages/Features'
 import HomePage from '@/pages/HomePage'
 import Login from '@/pages/Login'
 import Registration from '@/pages/Registration'
-import { createBrowserRouter} from 'react-router'
+import type { TRole } from '@/types'
+import { createBrowserRouter, Navigate} from 'react-router'
+import { adminSidebarItems } from './adminSidebarItems'
+import { senderSidebarItems } from './senderSidebarItems'
+import DashboardLayout from '@/components/layout/DashboardLayout'
+import { generateRoutes } from "@/utils/generateRoutes";
+import { withAuth } from '@/utils/withAuth'
+import { receiverSidebarItems } from './receiverSidebarItems'
 
 export const router = createBrowserRouter([
     {
@@ -44,9 +51,30 @@ export const router = createBrowserRouter([
         Component: Registration,
         path: "/register"
     },
+
     {
-        Component: Dashboard,
-        path: "/dashboard"
+        Component: withAuth(DashboardLayout, (role.admin) as TRole),
+        path: "/admin",
+        children: [
+            {index: true, element: <Navigate to="/admin/analytics" />},
+            ... generateRoutes(adminSidebarItems)
+        ]
+    },
+    {
+        Component: withAuth(DashboardLayout, role.sender as TRole),
+        path: "/sender",
+        children: [
+            {index: true, element: <Navigate to="/sender/bookings" />},
+            ...generateRoutes(senderSidebarItems)
+        ]
+    },
+    {
+        Component: withAuth(DashboardLayout, role.receiver as TRole),
+        path: "/receiver",
+        children: [
+            {index: true, element: <Navigate to="/receiver/bookings" />},
+            ...generateRoutes(receiverSidebarItems)
+        ]
     },
 
 ])

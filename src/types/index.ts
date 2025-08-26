@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react';
 
 
 export type { ILogin, IRegister, IChangePass } from './auth.type'
@@ -38,4 +39,13 @@ export interface IErrorResponse {
     name: string;
   };
   stack?: string;
+}
+
+export interface ISidebarItems {
+    title: string;
+    items: {
+        title: string;
+        url:string;
+        component: ComponentType
+    }[];
 }
