@@ -1,15 +1,43 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import config from "@/config";
 import { cn } from "@/lib/utils";
-import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { useLoginMutation } from "@/redux/features/auth/auth.api";
+import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
+import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 
 export function LoginForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-const form = useForm();
+  const navigate = useNavigate();
+  const form = useForm();
+  const [login] = useLoginMutation();
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      const res = await login(data).unwrap();
+      //console.log(res);
+      if (res.success) {
+        toast.success("Logged in successfully");
+        navigate("/");
+      }
+    } catch (err) {
+      console.error(err);
+
+      if ((err as any).data.message === "Password does not match") {
+        toast.error("Invalid credentials");
+      }
+
+      if ((err as any).data.message === "User is not verified") {
+        toast.error("Your account is not verified");
+        navigate("/verify", { state: data.email });
+      }
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
@@ -20,8 +48,7 @@ const form = useForm();
       </div>
       <div className="grid gap-6">
         <Form {...form}>
-          <form 
-           className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="email"
@@ -49,7 +76,7 @@ const form = useForm();
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="********"
+                      placeholder="Abc@123"
                       {...field}
                       value={field.value || ""}
                     />
@@ -72,7 +99,7 @@ const form = useForm();
         </div>
 
         <Button
-        
+          onClick={() => window.open(`${config.baseUrl}/auth/google`)}
           type="button"
           variant="outline"
           className="w-full cursor-pointer"

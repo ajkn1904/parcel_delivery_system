@@ -3,13 +3,16 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Password from "@/components/ui/Password";
 import Phone from "@/components/ui/Phone";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useRegisterMutation } from "@/redux/features/auth/auth.api";
+import { toast } from "sonner";
+import config from "@/config";
 
 
 
@@ -17,7 +20,7 @@ const registerSchema = z
   .object({
     name: z
       .string()
-      .min(3, {
+      .min(2, {
         error: "Name is too short",
       })
       .max(50),
@@ -49,21 +52,67 @@ export function RegisterForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   
+  const [register] = useRegisterMutation();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: "",
+      name: "John Doe",
       email: "",
       phone: "",
       role: "receiver",
       address: "",
-      password: "",
+      password: "Abc@123",
       confirmPassword: "",
     },
   });
 
-  
+  const onSubmit = async (data: z.infer<typeof registerSchema>) => {
+    const userInfo = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      phone: data.phone,
+      role: data.role,
+      address: data.address,
+    };
+
+    //console.log(userInfo);
+
+    const toastId = toast.loading("Creating Account...");
+    try {
+      const result = await register(userInfo).unwrap();
+      console.log(result);
+      if(result.success){
+        form.reset();
+      }
+      toast.success("User created successfully", {id: toastId});
+      navigate("/login", { state: data.email });
+    }
+    catch (error) {
+      console.error(error);
+      const err = error as { data?: { message?: string } };
+
+      if (err?.data?.message === "Email already exists") {
+        form.setError("email", {
+          type: "manual",
+          message: "Email already exists",
+        });
+        toast.error("This email is already registered!", { id: toastId });
+      } else {
+        form.setError("email", {
+          type: "manual",
+          message: err?.data?.message || "Something went wrong",
+        });
+        toast.error(err?.data?.message || "Something went wrong", { id: toastId });
+      }
+}
+
+    
+  };
+
+
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -76,7 +125,7 @@ export function RegisterForm({
 
       <div className="grid gap-6">
         <Form {...form}>
-          <form className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="name"
@@ -100,19 +149,14 @@ export function RegisterForm({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="john.doe@company.com"
-                      type="email"
-                      {...field}
-                    />
+                    <Input placeholder="john@example.com" {...field} value={field.value || ""} />
                   </FormControl>
-                  <FormDescription className="sr-only">
-                    This is your email.
-                  </FormDescription>
-                  <FormMessage />
+                  <FormMessage /> 
                 </FormItem>
               )}
             />
+
+
             <FormField
               control={form.control}
               name="phone"
@@ -136,7 +180,10 @@ export function RegisterForm({
                 <FormItem>
                   <FormLabel>Role</FormLabel>
                   <FormControl>
-                    <Select {...field}>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
                       <SelectTrigger className="w-[300px]">Role
                         <SelectValue />
                       </SelectTrigger>
@@ -174,7 +221,7 @@ export function RegisterForm({
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Password (e.g. Abc@123)</FormLabel>
                   <FormControl>
                     <Password {...field} />
                   </FormControl>
@@ -201,7 +248,7 @@ export function RegisterForm({
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full dark:text-foreground">
               Submit
             </Button>
           </form>
@@ -214,17 +261,18 @@ export function RegisterForm({
         </div>
 
         <Button
+          onClick={() => window.open(`${config.baseUrl}/auth/google`)}
           type="button"
           variant="outline"
           className="w-full cursor-pointer"
         >
-          Login with Google
+          Continue with Google
         </Button>
       </div>
 
       <div className="text-center text-sm">
         Already have an account?{" "}
-        <Link to="/login" className="underline underline-offset-4">
+        <Link to="/login" className="text-primary  underline underline-offset-4">
           Login
         </Link>
       </div>
