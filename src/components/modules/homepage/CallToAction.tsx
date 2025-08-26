@@ -38,13 +38,8 @@ export default function CallToAction ({
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-            {buttons.secondary && (
-              <Button variant="outline" asChild>
-                <a href={buttons.secondary.url}>{buttons.secondary.text}</a>
-              </Button>
-            )}
             {buttons.primary && (
-              <Button asChild variant="default" size="lg">
+              <Button asChild variant="default" size="lg" className="text-background dark:text-foreground">
                 <a href={buttons.primary.url}>{buttons.primary.text}</a>
               </Button>
             )}

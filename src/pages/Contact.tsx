@@ -76,7 +76,7 @@ export default function Contact({
               <Label htmlFor="message">Message</Label>
               <Textarea placeholder="Type your message here." id="message" />
             </div>
-            <Button className="w-full">Send Message</Button>
+            <Button className="w-full text-background dark:text-foreground">Send Message</Button>
           </div>
         </div>
       </div>

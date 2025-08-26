@@ -61,7 +61,7 @@ export default function HeroSection() {
                 <Button
                   asChild
                   id="register"
-                  className="text-md bg-primary text-primary-foreground h-12 w-fit rounded-full px-6"
+                  className="text-md bg-primary text-primary-foreground dark:text-foreground h-12 w-fit rounded-full px-6"
                 >
                   <Link to="/register" className="flex items-center gap-2">
                     Register <ArrowRight />
@@ -84,30 +84,30 @@ export default function HeroSection() {
                 </div>
 
                 <div className="absolute top-4 -ml-4 flex h-full w-full flex-col items-center justify-between p-10">
-                  <p className="text-background flex w-full items-center text-xl tracking-tighter">
-                    2025 <span className="bg-background mx-2 h-2.5 w-[1px]" />
+                  <p className="flex w-full items-center text-xl tracking-tighter text-background dark:text-foreground">
+                    2025 <span className="bg-background dark:bg-foreground mx-2 h-2.5 w-[1px]" />
                     August
                   </p>
                   <div className="flex flex-col items-center justify-center">
-                    <h2 className="text-background text-center text-6xl font-semibold tracking-tight">
+                    <h2 className="text-background dark:text-foreground text-center text-6xl font-semibold tracking-tight">
                       New <br />
                       Parcel
                     </h2>
-                    <div className="bg-background mt-2 h-1 w-6 rounded-full" />
-                    <p className="text-background/80 mt-10 max-w-sm px-2 text-center text-lg font-light leading-5 tracking-tighter">
+                    <div className="bg-background dark:bg-foreground mt-2 h-1 w-6 rounded-full" />
+                    <p className="80 mt-10 max-w-sm px-2 text-center text-lg font-light leading-5 tracking-tighter text-background dark:text-foreground">
                       Discover our worldwide parcel delivery service.
                     </p>
                   </div>
-                  <Button asChild variant="ghost">
+                  <Button asChild size={"lg"} className="text-background dark:text-foreground py-10">
                     <Link
                       to="/contact"
-                      className="text-background group mb-6 flex flex-col items-center"
+                      className="group mb-6 flex flex-col items-center"
                     >
                       <ChevronUp
                         size={30}
                         className="transition-all ease-in-out group-hover:-translate-y-2"
                       />
-                      <p className="text-background text-xl tracking-tight">
+                      <p className="text-xl tracking-tight">
                         Reach Us
                       </p>
                     </Link>

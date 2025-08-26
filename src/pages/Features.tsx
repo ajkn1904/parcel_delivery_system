@@ -62,7 +62,7 @@ export default function Features({
   ],
 }: Feature17Props) {
   return (
-    <section className="py-32">
+    <section className="container py-32 scale-x-[0.90]">
       <div className="container mx-auto max-w-7xl">
         <p className="mb-4 text-xs text-muted-foreground md:pl-5">
           {subheading}

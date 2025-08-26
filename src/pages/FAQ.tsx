@@ -42,10 +42,10 @@ export default function FAQ({
   faqs = defaultFaqs,
 }: Faq5Props) {
   return (
-    <section className="py-32">
+    <section className="container py-32 scale-x-[0.90]">
       <div className="container">
         <div className="text-center">
-          <Badge className="text-xs font-medium">{badge}</Badge>
+          <Badge className="text-xs font-medium dark:text-foreground">{badge}</Badge>
           <h1 className="mt-4 text-4xl font-semibold">{heading}</h1>
           <p className="mt-6 font-medium text-muted-foreground">
             {description}

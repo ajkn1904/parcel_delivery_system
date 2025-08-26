@@ -61,8 +61,8 @@ export default function Navbar() {
                           className={({ isActive }) =>
                             `block py-1.5 w-full ${
                               isActive
-                                ? "text-primary font-semibold"
-                                : "text-muted-foreground hover:text-primary"
+                                ? "text-primary dark:text-foreground font-semibold border-b-2 border-b-primary hover:border-b-primary"
+                                : "text-muted-foreground hover:text-primary dark:text-muted-foreground"
                             }`
                           }
                         >
@@ -91,7 +91,7 @@ export default function Navbar() {
                         `h-full justify-center border-b-2 px-3 py-1.5 font-medium transition-colors 
                         ${
                           isActive
-                            ? "border-b-primary text-primary"
+                            ? "border-b-primary text-primary dark:text-foreground"
                             : "border-transparent text-muted-foreground hover:text-primary hover:border-b-primary"
                         }`
                       }
@@ -108,7 +108,7 @@ export default function Navbar() {
         {/* Right side */}
         <div className="flex items-center gap-2">
           <ModeToggle/>
-          <Button asChild className="text-sm">
+          <Button asChild className="text-sm dark:text-foreground">
             <Link to="/login">Login</Link>
           </Button>
         </div>
