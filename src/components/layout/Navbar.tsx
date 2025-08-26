@@ -12,21 +12,39 @@ import {
 } from "@/components/ui/popover"
 import { Link, NavLink } from "react-router"
 import { ModeToggle } from "./ModeToggler"
+import { authApi, useLogoutMutation, useUserInfoQuery } from "@/redux/features/auth/auth.api"
+import { useAppDispatch } from "@/redux/hook"
+import { role } from "@/constants/role"
+import React from "react"
 
 
 export default function Navbar() {
   // Navigation links array
   const navigationLinks = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "/features", label: "Features" },
-    { href: "/contact", label: "Contact" },
-    { href: "/faq", label: "FAQ" },
-    { href: "/admin", label: "Dashboard" },
+    { href: "/", label: "Home", role: "PUBLIC" },
+    { href: "/about", label: "About", role: "PUBLIC" },
+    { href: "/features", label: "Features", role: "PUBLIC" },
+    { href: "/contact", label: "Contact", role: "PUBLIC" },
+    { href: "/faq", label: "FAQ", role: "PUBLIC" },
+    { href: "/admin", label: "Dashboard", role: role.admin },
+    { href: "/sender", label: "Dashboard", role: role.sender },
+    { href: "/receiver", label: "Dashboard", role: role.receiver },
   ]
 
+
+  const { data } = useUserInfoQuery(undefined);
+  const [logout] = useLogoutMutation();
+  const dispatch = useAppDispatch();
+  console.log(data?.data?.email);
+
+  
+  const handleLogout = async () => {
+    await logout(undefined);
+    dispatch(authApi.util.resetApiState());
+  };
+
   return (
-    <header className="border-b px-4 md:px-6">
+    <header className="sticky top-0 z-50 bg-accent/80 border-b px-4 md:px-6">
       <div className="flex h-16 justify-between gap-4">
         {/* Left side */}
         <div className="flex gap-2">
@@ -55,7 +73,9 @@ export default function Navbar() {
                 <NavigationMenu className="max-w-none *:w-full">
                   <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
                     {navigationLinks.map((link, index) => (
-                      <NavigationMenuItem key={index} className="w-full">
+                    <React.Fragment key={index}>
+                    {link.role === "PUBLIC" && (
+                        <NavigationMenuItem key={index} className="w-full">
                         <NavLink
                           to={link.href}
                           className={({ isActive }) =>
@@ -69,6 +89,24 @@ export default function Navbar() {
                           {link.label}
                         </NavLink>
                       </NavigationMenuItem>
+                      )}
+                      {link.role === data?.data?.role && (
+                        <NavigationMenuItem key={index} className="w-full">
+                        <NavLink
+                          to={link.href}
+                          className={({ isActive }) =>
+                            `block py-1.5 w-full ${
+                              isActive
+                                ? "text-primary dark:text-foreground font-semibold border-b-2 border-b-primary hover:border-b-primary"
+                                : "text-muted-foreground hover:text-primary dark:text-muted-foreground"
+                            }`
+                          }
+                        >
+                          {link.label}
+                        </NavLink>
+                      </NavigationMenuItem>
+                      )}
+                      </React.Fragment>
                     ))}
                   </NavigationMenuList>
                 </NavigationMenu>
@@ -84,7 +122,9 @@ export default function Navbar() {
             <NavigationMenu className="h-full max-md:hidden">
               <NavigationMenuList className="h-full gap-2">
                 {navigationLinks.map((link, index) => (
-                  <NavigationMenuItem key={index} className="h-full">
+                  <React.Fragment key={index}>
+                    {link.role === "PUBLIC" && (
+                    <NavigationMenuItem key={index} className="h-full">
                     <NavLink
                       to={link.href}
                       className={({ isActive }) =>
@@ -99,6 +139,25 @@ export default function Navbar() {
                       {link.label}
                     </NavLink>
                   </NavigationMenuItem>
+                  )}
+                  {link.role === data?.data?.role && (
+                    <NavigationMenuItem key={index} className="h-full">
+                    <NavLink
+                      to={link.href}
+                      className={({ isActive }) =>
+                        `h-full justify-center border-b-2 px-3 py-1.5 font-medium transition-colors 
+                        ${
+                          isActive
+                            ? "border-b-primary text-primary dark:text-foreground"
+                            : "border-transparent text-muted-foreground hover:text-primary hover:border-b-primary"
+                        }`
+                      }
+                    >
+                      {link.label}
+                    </NavLink>
+                  </NavigationMenuItem>
+                  )}
+                  </React.Fragment>
                 ))}
               </NavigationMenuList>
             </NavigationMenu>
@@ -108,9 +167,20 @@ export default function Navbar() {
         {/* Right side */}
         <div className="flex items-center gap-2">
           <ModeToggle/>
-          <Button asChild className="text-sm dark:text-foreground">
-            <Link to="/login">Login</Link>
-          </Button>
+            {data?.data?.email && (
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="text-sm"
+            >
+              Logout
+            </Button>
+          )}
+          {!data?.data?.email && (
+            <Button asChild className="text-sm dark:text-foreground">
+              <Link to="/login">Login</Link>
+            </Button>
+          )}
         </div>
       </div>
     </header>

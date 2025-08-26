@@ -28,7 +28,7 @@ const DottedDiv = ({
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden lg:max-h-[85vh] bg-background mx-auto">
+    <section className="relative overflow-hidden lg:max-h-[85vh] bg-background mx-auto pt-5">
       <div className="px-0! container relative flex flex-col items-center lg:scale-y-[0.8] xl:scale-[0.8] origin-top">
         <DottedDiv>
           <div className="grid lg:grid-cols-2">

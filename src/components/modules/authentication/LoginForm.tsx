@@ -5,18 +5,30 @@ import { Input } from "@/components/ui/input";
 import config from "@/config";
 import { cn } from "@/lib/utils";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
-import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
+import {z} from "zod";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+const loginSchema = z
+  .object({
+    email: z.email({error: "Email cannot be empty!"}),
+    password: z.string({error: "Password cannot be empty!"}),
+  })
+
+
+export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  
   const navigate = useNavigate();
-  const form = useForm();
+  //const form = useForm();
   const [login] = useLoginMutation();
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  
+  const form = useForm<z.infer<typeof loginSchema>>({
+      resolver: zodResolver(loginSchema)
+    });
+  
+  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
       const res = await login(data).unwrap();
       //console.log(res);
@@ -86,7 +98,7 @@ export function LoginForm({
               )}
             />
 
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full dark:text-foreground">
               Login
             </Button>
           </form>

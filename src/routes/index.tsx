@@ -8,7 +8,7 @@ import HomePage from '@/pages/HomePage'
 import Login from '@/pages/Login'
 import Registration from '@/pages/Registration'
 import type { TRole } from '@/types'
-import { createBrowserRouter, Navigate} from 'react-router'
+import { createBrowserRouter, Navigate } from 'react-router'
 import { adminSidebarItems } from './adminSidebarItems'
 import { senderSidebarItems } from './senderSidebarItems'
 import DashboardLayout from '@/components/layout/DashboardLayout'
@@ -41,39 +41,39 @@ export const router = createBrowserRouter([
                 Component: FAQ,
                 path: "faq"
             },
+            {
+                Component: Login,
+                path: "/login"
+            },
+            {
+                Component: Registration,
+                path: "/register"
+            },
+
+            {
+                Component: withAuth(DashboardLayout, role.sender as TRole),
+                path: "/sender",
+                children: [
+                    { index: true, element: <Navigate to="/sender/history" /> },
+                    ...generateRoutes(senderSidebarItems)
+                ]
+            },
+            {
+                Component: withAuth(DashboardLayout, role.receiver as TRole),
+                path: "/receiver",
+                children: [
+                    { index: true, element: <Navigate to="/receiver/history" /> },
+                    ...generateRoutes(receiverSidebarItems)
+                ]
+            },
         ]
     },
-    {
-        Component: Login,
-        path: "/login"
-    },
-    {
-        Component: Registration,
-        path: "/register"
-    },
-
     {
         Component: withAuth(DashboardLayout, (role.admin) as TRole),
         path: "/admin",
         children: [
-            {index: true, element: <Navigate to="/admin/analytics" />},
-            ... generateRoutes(adminSidebarItems)
-        ]
-    },
-    {
-        Component: withAuth(DashboardLayout, role.sender as TRole),
-        path: "/sender",
-        children: [
-            {index: true, element: <Navigate to="/sender/bookings" />},
-            ...generateRoutes(senderSidebarItems)
-        ]
-    },
-    {
-        Component: withAuth(DashboardLayout, role.receiver as TRole),
-        path: "/receiver",
-        children: [
-            {index: true, element: <Navigate to="/receiver/bookings" />},
-            ...generateRoutes(receiverSidebarItems)
+            { index: true, element: <Navigate to="/admin/analytics" /> },
+            ...generateRoutes(adminSidebarItems)
         ]
     },
 
