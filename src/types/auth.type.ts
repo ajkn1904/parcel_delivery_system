@@ -1,4 +1,21 @@
+import type { TRole } from ".";
+
 //normal types
+export interface IUser {
+  id: string;
+  name: string;
+  email: string;
+  role: TRole;
+  phone?: string;
+  address?: string;
+}
+
+export interface ILoginResponse {
+  user: IUser;
+  accessToken: string;
+  refreshToken?: string;
+}
+
 
 export interface ILogin {
     email: string;

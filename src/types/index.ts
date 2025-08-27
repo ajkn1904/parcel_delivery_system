@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react';
 
 
-export type { ILogin, IRegister, IChangePass } from './auth.type'
+export type { ILogin, IRegister, IChangePass, IUser, ILoginResponse } from './auth.type'
 
 
 //generic types

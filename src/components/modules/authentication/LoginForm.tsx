@@ -4,7 +4,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import config from "@/config";
 import { cn } from "@/lib/utils";
-import { useLoginMutation } from "@/redux/features/auth/auth.api";
+import { authApi, useLoginMutation } from "@/redux/features/auth/auth.api";
+import { useAppDispatch } from "@/redux/hook";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
@@ -15,38 +16,59 @@ const loginSchema = z
   .object({
     email: z.email({error: "Email cannot be empty!"}),
     password: z.string({error: "Password cannot be empty!"}),
-  })
+})
 
 
 export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   //const form = useForm();
   const [login] = useLoginMutation();
-  
-  const form = useForm<z.infer<typeof loginSchema>>({
+ const form = useForm<z.infer<typeof loginSchema>>({
       resolver: zodResolver(loginSchema)
     });
   
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+    const toastId = toast.loading("Wait for a while...")
     try {
       const res = await login(data).unwrap();
       //console.log(res);
       if (res.success) {
-        toast.success("Logged in successfully");
+        toast.success("Logged in successfully", {id: toastId});
+        dispatch(authApi.util.invalidateTags(["USER"]));
+        
+      const userRole = res?.data?.user?.role;
+
+      // 🚀 Redirect based on role
+      if (userRole === "admin") {
+        navigate("/admin");
+      } else if (userRole === "sender") {
+        navigate("/sender");
+      } else if (userRole === "receiver") {
+        navigate("/receiver");
+      } else {
         navigate("/");
+      };
       }
-    } catch (err) {
-      console.error(err);
+    } 
+    catch (error) {
+      const err = error as { data?: { message?: string } };
 
-      if ((err as any).data.message === "Password does not match") {
-        toast.error("Invalid credentials");
-      }
-
-      if ((err as any).data.message === "User is not verified") {
-        toast.error("Your account is not verified");
-        navigate("/verify", { state: data.email });
-      }
+      if ((err as any).data.message === "Password Does not Match!") {
+          form.setError("password", {
+            type: "manual",
+            message: err?.data?.message || "Something went wrong",
+          });
+          toast.error(err?.data?.message || "Something went wrong", { id: toastId });
+        }
+        else if ((err as any).data.message === "User Does not Exists!") {
+          form.setError("email", {
+            type: "manual",
+            message: err?.data?.message || "Something went wrong",
+          });
+          toast.error(err?.data?.message || "Something went wrong", { id: toastId });
+        }
     }
   };
 
