@@ -1,18 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import BlockOrDeleteConfirmation from "@/components/BlockOrDeleteConfirmation";
 import { Button } from "@/components/ui/button";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useGetAllUserQuery, useUpdateUserMutation } from "@/redux/features/user/user.api";
 import { SkeletonCard } from "@/utils/SkeletonCard";
 import { ArchiveRestoreIcon, Ban, Check, Trash2, UserCheckIcon} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function ManageUser() {
     const {data, isLoading} = useGetAllUserQuery(undefined)
     const total = data?.length;
-
     const [updateUser] = useUpdateUserMutation()
+     const [currentPage, setCurrentPage] = useState(1);
 
+  // 👇 page size
+  const usersPerPage = 5;
+  const totalPage = Math.ceil(total / usersPerPage);
+
+  // 👇 Slice data for current page
+  const startIndex = (currentPage - 1) * usersPerPage;
+  const endIndex = startIndex + usersPerPage;
+  const currentUsers = data?.slice(startIndex, endIndex);
 
     const handleBlockUser = async (id: string, data: any) => {
         const toastId = toast.loading(data?.isBlocked ? "Unblocking User..." : "Blocking User...");
@@ -87,8 +97,8 @@ export default function ManageUser() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {data?.map((user: { _id:string, name: string, email: string, role: string, isBlocked: boolean, isDeleted: boolean,  }) => (
-                <TableRow>
+                {currentUsers?.map((user: { _id:string, name: string, email: string, role: string, isBlocked: boolean, isDeleted: boolean,  }) => (
+                <TableRow key={user._id}>
                     <TableCell className="font-medium">
                     {user?.name}
                     </TableCell>
@@ -138,6 +148,52 @@ export default function ManageUser() {
             </TableBody>
             </Table>
         </div>
+
+
+
+        {totalPage > 1 && (
+            <div className="flex justify-center mt-10">
+                <div>
+                <Pagination>
+                    <PaginationContent>
+                    <PaginationItem>
+                        <PaginationPrevious
+                        onClick={() => setCurrentPage((prev) => prev - 1)}
+                        className={
+                            currentPage === 1
+                            ? "pointer-events-none opacity-50"
+                            : "cursor-pointer"
+                        }
+                        />
+                    </PaginationItem>
+                    {Array.from({ length: totalPage }, (_, index) => index + 1).map(
+                        (page) => (
+                        <PaginationItem
+                            key={page}
+                            onClick={() => setCurrentPage(page)}
+                        >
+                            <PaginationLink isActive={currentPage === page}>
+                            {page}
+                            </PaginationLink>
+                        </PaginationItem>
+                        )
+                    )}
+                    <PaginationItem>
+                        <PaginationNext
+                        onClick={() => setCurrentPage((prev) => prev + 1)}
+                        className={
+                            currentPage === totalPage
+                            ? "pointer-events-none opacity-50"
+                            : "cursor-pointer"
+                        }
+                        />
+                    </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
+                </div>
+            </div>
+        )}
+
         </div>
     );
 }
