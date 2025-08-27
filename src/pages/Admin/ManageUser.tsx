@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import BlockOrDeleteConfirmation from "@/components/BlockOrDeleteConfirmation";
 import { Button } from "@/components/ui/button";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useGetAllUserQuery, useUpdateUserMutation } from "@/redux/features/user/user.api";
+import GetPagination from "@/utils/getPagination";
 import { SkeletonCard } from "@/utils/SkeletonCard";
 import { ArchiveRestoreIcon, Ban, Check, Trash2, UserCheckIcon} from "lucide-react";
 import { useState } from "react";
@@ -11,18 +13,26 @@ import { toast } from "sonner";
 
 export default function ManageUser() {
     const {data, isLoading} = useGetAllUserQuery(undefined)
-    const total = data?.length;
+    const total = data?.length ?? 0;
     const [updateUser] = useUpdateUserMutation()
-     const [currentPage, setCurrentPage] = useState(1);
 
-  // 👇 page size
-  const usersPerPage = 5;
-  const totalPage = Math.ceil(total / usersPerPage);
+    const [selectedRole, setSelectedRole] = useState<string>("");
 
-  // 👇 Slice data for current page
-  const startIndex = (currentPage - 1) * usersPerPage;
-  const endIndex = startIndex + usersPerPage;
-  const currentUsers = data?.slice(startIndex, endIndex);
+    const [currentPage, setCurrentPage] = useState(1);
+    const usersPerPage = 5;
+    
+    const startIndex = (currentPage - 1) * usersPerPage;
+    const endIndex = startIndex + usersPerPage;
+    
+    const filteredUsers = selectedRole && selectedRole !== "all" ? data?.filter((user: any) => user.role === selectedRole) : data;
+
+    const totalFiltered = filteredUsers?.length ?? 0;
+    const totalPage = Math.ceil(totalFiltered / usersPerPage);
+    const currentUsers = filteredUsers?.slice(startIndex, endIndex);
+
+
+
+
 
     const handleBlockUser = async (id: string, data: any) => {
         const toastId = toast.loading(data?.isBlocked ? "Unblocking User..." : "Blocking User...");
@@ -71,9 +81,6 @@ export default function ManageUser() {
 
 
 
-
-
-
     if(isLoading){
         return <SkeletonCard/>
     }
@@ -82,8 +89,30 @@ export default function ManageUser() {
         <div className="w-full max-w-7xl mx-auto px-5">
         <div className="flex justify-between my-8">
             <h1 className="text-xl font-semibold">User : {data ? total : 0}</h1>
-            
+
+
+            {/* ⬇️ Role filter */}
+            <div className="w-48 flex justify-between align-middle gap-2">
+                <Label>Role</Label>
+                <Select onValueChange={(value) => setSelectedRole(value)} value={selectedRole || "all"}>
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select Role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                        <SelectLabel>Roles</SelectLabel>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="admin">Admin</SelectItem>
+                        <SelectItem value="sender">Sender</SelectItem>
+                        <SelectItem value="receiver">User</SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+            </div>
         </div>
+
+
+
         <div className="border border-muted rounded-md">
             <Table>
             <TableHeader>
@@ -151,46 +180,14 @@ export default function ManageUser() {
 
 
 
-        {totalPage > 1 && (
+        {totalFiltered > 5 && totalPage > 1 && (
             <div className="flex justify-center mt-10">
-                <div>
-                <Pagination>
-                    <PaginationContent>
-                    <PaginationItem>
-                        <PaginationPrevious
-                        onClick={() => setCurrentPage((prev) => prev - 1)}
-                        className={
-                            currentPage === 1
-                            ? "pointer-events-none opacity-50"
-                            : "cursor-pointer"
-                        }
-                        />
-                    </PaginationItem>
-                    {Array.from({ length: totalPage }, (_, index) => index + 1).map(
-                        (page) => (
-                        <PaginationItem
-                            key={page}
-                            onClick={() => setCurrentPage(page)}
-                        >
-                            <PaginationLink isActive={currentPage === page}>
-                            {page}
-                            </PaginationLink>
-                        </PaginationItem>
-                        )
-                    )}
-                    <PaginationItem>
-                        <PaginationNext
-                        onClick={() => setCurrentPage((prev) => prev + 1)}
-                        className={
-                            currentPage === totalPage
-                            ? "pointer-events-none opacity-50"
-                            : "cursor-pointer"
-                        }
-                        />
-                    </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
-                </div>
+                <GetPagination
+                totalItems={total}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                itemsPerPage={usersPerPage}
+                />
             </div>
         )}
 
