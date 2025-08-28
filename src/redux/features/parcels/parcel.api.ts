@@ -21,7 +21,7 @@ export const parcelApi = baseApi.injectEndpoints({
         }),
         getSingleParcel: builder.query({
             query: ({id}) => ({
-                url: `/parcel/${id}`,
+                url: `/parcel/history/${id}`,
                 method: "GET",
             }),
         providesTags: ["PARCEL"],

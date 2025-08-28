@@ -4,7 +4,7 @@ import { Dribbble, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 export default function Footer() {
   return (
     <footer>
-      <div className="mx-auto container space-y-8 px-4 py-16">
+      <div className="mx-auto container space-y-8 px-4 py-16 bg-gray-100 dark:bg-gray-900">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div>
             <div className="text-foreground">

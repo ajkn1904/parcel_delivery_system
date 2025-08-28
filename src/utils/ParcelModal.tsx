@@ -78,7 +78,7 @@ export function ParcelModal({ tId, sender, receiver, parcelData }: { tId: string
           size="sm"
           className="text-blue-600 hover:bg-blue-600 hover:text-white"
         >
-          Status <Edit2 />
+          <Edit2 />
         </Button>
       </DialogTrigger>
 

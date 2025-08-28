@@ -77,10 +77,10 @@ export default function ParcelSearchFilter() {
   return (
     <div className="border border-muted rounded-md p-2">
         <div className="flex justify-between items-center mb-1">
-            <h1>Filters</h1>
+            <h1>Search | Filter</h1>
             <Button size="sm" variant="ghost" className="border rounded-full font-bold" onClick={handleClearFilter}>Clear</Button>
         </div>
-        <div className="flex flex-col justify-between gap-2">
+        <div className="flex flex-col lg:flex-row justify-between gap-2 align-middle">
 
             <div className="relative mt-2">
                 <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -154,7 +154,7 @@ export default function ParcelSearchFilter() {
                     </SelectGroup>
                     </SelectContent>
                 </Select>
-                </div>
+            </div>
 
             
 

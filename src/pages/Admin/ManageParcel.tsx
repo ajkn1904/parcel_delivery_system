@@ -10,12 +10,12 @@ import BlockOrDeleteConfirmation from "@/components/BlockOrDeleteConfirmation";
 import { Trash2 } from "lucide-react";
 import { ParcelModal } from "@/utils/ParcelModal";
 import ParcelSearchFilter from "@/utils/ParcelSearchFilter";
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
 export default function ManageParcel() {
     const [currentPage, setCurrentPage] = useState(1);
     const parcelsPerPage = 10;
-
+    const navigate = useNavigate()
 
     const [searchParams] = useSearchParams();
 
@@ -75,7 +75,7 @@ export default function ManageParcel() {
 
     return (
         <div className="w-full max-w-6xl mx-auto px-5">
-            <div className="flex justify-between my-8">
+            <div className="flex justify-between lg:items-center my-8">
                 <h1 className="text-xl font-semibold">Total Parcel: {total}</h1>
 
                 <ParcelSearchFilter/>
@@ -86,11 +86,11 @@ export default function ManageParcel() {
                     <p className="font-bold text-xl text-center mx-auto">No Data Found</p>
                     :
                     <Table>
-                        <TableHeader>
-                            <TableRow>
+                        <TableHeader className="bg-blue-200 dark:bg-blue-900">
+                            <TableRow >
                                 <TableHead className="border-r-2">No.</TableHead>
                                 <TableHead>Tracking ID</TableHead>
-                                <TableHead>Parcel Type</TableHead>
+                                <TableHead>Type</TableHead>
                                 <TableHead>Sender</TableHead>
                                 <TableHead>Receiver</TableHead>
                                 <TableHead>Pickup Address</TableHead>
@@ -98,8 +98,8 @@ export default function ManageParcel() {
                                 <TableHead>Delivery Method</TableHead>
                                 <TableHead>Weight (kg)</TableHead>
                                 <TableHead>Delivery Fee</TableHead>
-                                <TableHead>After Discount</TableHead>
                                 <TableHead>Discount</TableHead>
+                                <TableHead>After Discount</TableHead>
                                 <TableHead>Payment Method</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead>Created At</TableHead>
@@ -119,13 +119,20 @@ export default function ManageParcel() {
                                     <TableCell>{parcel.deliveryAddress}</TableCell>
                                     <TableCell>{parcel.deliveryMethod}</TableCell>
                                     <TableCell>{parcel.weight}</TableCell>
-                                    <TableCell>{parcel.deliveryFee}</TableCell>
-                                    <TableCell>{parcel.afterDiscountDeliveryFee}</TableCell>
+                                    <TableCell>{parcel.deliveryFee} tk</TableCell>
                                     <TableCell>{parcel.discountAmount}</TableCell>
+                                    <TableCell>{parcel.afterDiscountDeliveryFee ?parcel.afterDiscountDeliveryFee + 'tk': ''}</TableCell>
                                     <TableCell>{parcel.paymentMethod}</TableCell>
                                     <TableCell className="font-medium">{parcel.currentStatus}</TableCell>
-                                    <TableCell>{new Date(parcel.createdAt).toLocaleString()}</TableCell>
+                                    <TableCell>{new Date(parcel.createdAt).toLocaleString("PP")}</TableCell>
                                     <TableCell className="flex justify-between gap-2 border-l-2">
+                                        
+                                        <Button variant={"outline"} size="sm" className="text-orange-500 hover:bg-orange-500 hover:text-white"
+                                        onClick={() => navigate(`/tracking/${parcel._id}`)}>
+                                                TRACK
+                                        </Button>
+                                        
+                                        
                                         <ParcelModal
                                             tId={parcel.trackingId}
                                             sender={parcel.sender?.email ?? "Unknown"}

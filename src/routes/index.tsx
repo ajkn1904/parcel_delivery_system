@@ -15,6 +15,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import { generateRoutes } from "@/utils/generateRoutes";
 import { withAuth } from '@/utils/withAuth'
 import { receiverSidebarItems } from './receiverSidebarItems'
+import Tracking from '@/pages/Tracking'
 
 export const router = createBrowserRouter([
     {
@@ -48,6 +49,11 @@ export const router = createBrowserRouter([
             {
                 Component: Registration,
                 path: "/register"
+            },
+            
+            {
+                Component: withAuth(Tracking),
+                path: "/tracking/:trackingId"
             },
             {
                     Component: withAuth(DashboardLayout, (role.admin) as TRole),
