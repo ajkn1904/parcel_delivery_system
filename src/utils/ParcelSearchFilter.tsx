@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Search } from "lucide-react";
 import { useSearchParams } from "react-router";
 
 export default function ParcelSearchFilter() {
@@ -11,6 +13,7 @@ export default function ParcelSearchFilter() {
   const selectedStatus = searchParams.get("currentStatus") || "";
   const selectedType = searchParams.get("parcelType") || "";
   const selectedSort = searchParams.get("sort") || "";
+  const searchQuery = searchParams.get("search") || "";
 
 
 
@@ -51,7 +54,15 @@ export default function ParcelSearchFilter() {
     setSearchParams(params);
   };
 
-
+  const handleSearchChange = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (value) {
+      params.set("search", value);
+    } else {
+      params.delete("search");
+    }
+    setSearchParams(params);
+  };
 
 
   const handleClearFilter = () => {
@@ -59,6 +70,7 @@ export default function ParcelSearchFilter() {
     params.delete("currentStatus");
     params.delete("parcelType");
     params.delete("sort");
+    params.delete("search");
     setSearchParams(params);
   };
 
@@ -69,7 +81,21 @@ export default function ParcelSearchFilter() {
             <Button size="sm" variant="ghost" className="border rounded-full font-bold" onClick={handleClearFilter}>Clear</Button>
         </div>
         <div className="flex flex-col justify-between gap-2">
-            <div className="flex gap-1 align-middle items-center">
+
+            <div className="relative mt-2">
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <Input
+                id="trackingId"
+                type="search"
+                placeholder="Enter tracking ID"
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="pl-8 w-[230px]"
+                />
+            </div>
+
+
+            <div className="flex gap-1 align-middle justify-between">
                 <Label className="">Status</Label>
                 <Select
                 onValueChange={handleStatusChange}

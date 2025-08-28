@@ -22,12 +22,14 @@ export default function ManageParcel() {
     const currentStatus = searchParams.get("currentStatus") || undefined;
     const parcelType = searchParams.get("parcelType") || undefined;
     const sort = searchParams.get("sort") || undefined;
+    const search = searchParams.get("search") || undefined;
 
     // Pass pagination params to backend query
     const { data, isLoading } = useGetAllParcelsQuery({
         currentStatus,
         parcelType,
         sort,
+        search,
         page: currentPage,
         limit: parcelsPerPage,
     });
