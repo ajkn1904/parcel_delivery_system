@@ -32,6 +32,7 @@ const { data, isLoading } = useGetSingleParcelQuery({ id: trackingId });
     title: event.status,
     description: event.note,
     time: new Date(event.createdAt).toLocaleString(),
+    updatedByRole: event.updatedByRole ?? '',
     location: event.location ?? "",
   }));
 
@@ -42,15 +43,17 @@ const { data, isLoading } = useGetSingleParcelQuery({ id: trackingId });
       </h1>
 
       <Stepper defaultValue={steps.length + 1} orientation="vertical" className="ml-10 lg:ml-0">
-        {steps.map(({ step, title, description, location, time }: any) => (
+        {steps.map(({ step, title, description, location, updatedByRole, time }: any) => (
           <StepperItem key={step} step={step} className="relative items-start not-last:flex-1">
             <div className="flex items-start pb-12 last:pb-0">
               <StepperIndicator />
               <div className="mt-0.5 space-y-0.5 px-2 text-left">
                 <StepperTitle>{title}</StepperTitle>
                 {description && <StepperDescription>{description}</StepperDescription>}
-                {location && <StepperDescription>{location}</StepperDescription>}
                 <StepperDescription>{time}</StepperDescription>
+                {location && <StepperDescription>{location}</StepperDescription>}
+                {updatedByRole && <StepperDescription> <span className="font-bold">Updated By: </span>{updatedByRole}</StepperDescription>}
+                
               </div>
             </div>
 

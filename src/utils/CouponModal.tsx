@@ -23,6 +23,7 @@ const FormSchema = z.object({
 
 
 export function CouponModal({ id, code, discountPercentage, expiryDate }: { id: string; code: string; discountPercentage: number; expiryDate: string }) {
+    console.log(id, code, expiryDate, discountPercentage);
 
     const [open, setOpen] = useState(false);
     const [couponUpdate] = useUpdateCouponMutation();

@@ -15,22 +15,36 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useUpdateParcelByAdminMutation } from "@/redux/features/parcels/parcel.api";
 import { Edit2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export function ParcelModal({ tId, sender, receiver, parcelData }: { tId: string; sender: string; receiver: string; parcelData: any }) {
+  console.log(parcelData);
 
   const [open, setOpen] = useState(false);
   const [parcelStatusUpdate] = useUpdateParcelByAdminMutation();
 
-  const form = useForm({
-    defaultValues: {
+const form = useForm({
+  defaultValues: {
+    currentStatus: "",
+    note: "",
+    location: "",
+  },
+});
+
+// 🔹 Reset form values whenever modal opens with fresh data
+useEffect(() => {
+  if (open && parcelData) {
+    const lastLog = parcelData.trackingEvents?.[parcelData.trackingEvents.length - 1] || {};
+
+    form.reset({
       currentStatus: parcelData.currentStatus || "",
-      //note: parcelData.note || "",
-      location: parcelData.location || "",
-    },
-  });
+      note: lastLog.note || "",
+      location: lastLog.location || "",
+    });
+  }
+}, [open, parcelData, form]);
 
   const { formState } = form;
 
@@ -51,7 +65,7 @@ export function ParcelModal({ tId, sender, receiver, parcelData }: { tId: string
     try {
       const payload = {
         currentStatus: data.currentStatus,
-        //note: data?.note,
+        note: data.note,
         location: data?.location,
       };
 
@@ -61,6 +75,7 @@ export function ParcelModal({ tId, sender, receiver, parcelData }: { tId: string
       toast.success("Parcel status updated!", { id: toastId });
       form.reset({
         currentStatus: data.currentStatus,
+        note: data.note,
         location: data.location,
       });
       setOpen(false);
@@ -85,7 +100,7 @@ export function ParcelModal({ tId, sender, receiver, parcelData }: { tId: string
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            Update Status of parcel
+            <div className="text-center mb-4 text-2xl">Update Parcel Status</div>
             <div className="text-start my-2">
               Tracking ID: <span className="font-light"> {tId}</span>
             </div>
@@ -107,54 +122,57 @@ export function ParcelModal({ tId, sender, receiver, parcelData }: { tId: string
         <DialogDescription></DialogDescription>
 
         <Form {...form}>
-          <form id="status-log" className="flex  justify-between gap-5 w-full" onSubmit={form.handleSubmit(onSubmit)}>
-            {/* Current Status Dropdown */}
-            <FormField
-              control={form.control}
-              name="currentStatus"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Current Status</FormLabel>
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {parcelStatuses.map((status) => (
-                          <SelectItem key={status} value={status}>
-                            {status}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <form id="status-log" className="  mt-2 w-full" onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="flex justify-between gap-5 w-full mb-1">
+              {/* Current Status Dropdown */}
+              <FormField
+                control={form.control}
+                name="currentStatus"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Current Status</FormLabel>
+                    <FormControl>
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {parcelStatuses.map((status) => (
+                            <SelectItem key={status} value={status}>
+                              {status}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Location Input */}
-            <FormField
-              control={form.control}
-              name="location"
-              render={({ field }) => (
-                <FormItem className="grow-1">
-                  <FormLabel>Location</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Dhaka" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              {/* Location Input */}
+              <FormField
+                control={form.control}
+                name="location"
+                render={({ field }) => (
+                  <FormItem className="grow-1">
+                    <FormLabel>Location</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
             />
+            </div>
+
 
             {/* Note Input */}
-            {/* <FormField
+            <FormField
               control={form.control}
               name="note"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex justify-between gap-2 mt-2">
                   <FormLabel>Note</FormLabel>
                   <FormControl>
                     <Input {...field} />
@@ -162,7 +180,7 @@ export function ParcelModal({ tId, sender, receiver, parcelData }: { tId: string
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
           </form>
         </Form>
 

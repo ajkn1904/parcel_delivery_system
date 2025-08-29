@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { SkeletonCard } from "@/utils/SkeletonCard";
-import GetPagination from "@/utils/getPagination";
-import { useDeleteParcelMutation, useGetAllParcelsQuery, useUpdateParcelByAdminMutation } from "@/redux/features/parcels/parcel.api";
+import GetPagination from "@/utils/GetPagination";
+import { useDeleteParcelMutation, useGetAllParcelsQuery} from "@/redux/features/parcels/parcel.api";
 import { toast } from "sonner";
 import BlockOrDeleteConfirmation from "@/components/BlockOrDeleteConfirmation";
 import { Trash2 } from "lucide-react";
@@ -38,24 +38,24 @@ export default function ManageParcel() {
     //console.log(parcelData);
     const total = data?.meta?.total ?? 0;
     const totalPage = Math.ceil(total / parcelsPerPage);
-    const [updateParcel] = useUpdateParcelByAdminMutation();
+    //const [updateParcel] = useUpdateParcelByAdminMutation();
     const [deleteParcel] = useDeleteParcelMutation();
 
-    const handleEditParcelStatus = async (id: string, parcel: any) => {
-        const toastId = toast.loading("Status Updating...");
-        try {
-            const payload = { ...parcel, isBlocked: !parcel.isBlocked };
-            delete payload._id;
+    // const handleEditParcelStatus = async (id: string, parcel: any) => {
+    //     const toastId = toast.loading("Status Updating...");
+    //     try {
+    //         const payload = { ...parcel, isBlocked: !parcel.isBlocked };
+    //         delete payload._id;
 
-            const res = await updateParcel({ id, ...payload }).unwrap();
-            if (res.success) {
-                toast.success("Updated!", { id: toastId });
-            }
-        } catch (error) {
-            console.log(error);
-            toast.error("Something went wrong!", { id: toastId });
-        }
-    };
+    //         const res = await updateParcel({ id, ...payload }).unwrap();
+    //         if (res.success) {
+    //             toast.success("Updated!", { id: toastId });
+    //         }
+    //     } catch (error) {
+    //         console.log(error);
+    //         toast.error("Something went wrong!", { id: toastId });
+    //     }
+    // };
 
     const handleDeleteParcel = async (id: string) => {
         const toastId = toast.loading("Deleting parcel...");
