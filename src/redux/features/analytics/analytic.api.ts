@@ -23,6 +23,13 @@ export const analyticApi = baseApi.injectEndpoints({
             params
         }),
         }),
+        getParcelOverview: builder.query({
+        query: (params) => ({
+            url: "/analytics/overview",
+            method: "GET",
+            params
+        }),
+        }),
         
     }),
 });
@@ -31,5 +38,6 @@ export const analyticApi = baseApi.injectEndpoints({
 export const {
     useGetStatusDistributionQuery,
     useGetMonthlyShipmentsQuery,
-    useGetParcelTrendsQuery
+    useGetParcelTrendsQuery,
+    useGetParcelOverviewQuery
 } = analyticApi;

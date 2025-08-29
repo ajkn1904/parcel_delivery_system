@@ -15,10 +15,12 @@ import { Bar, Pie, Line } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
   useGetMonthlyShipmentsQuery,
+  useGetParcelOverviewQuery,
   useGetParcelTrendsQuery,
   useGetStatusDistributionQuery,
 } from "@/redux/features/analytics/analytic.api";
 import { useTheme } from "@/hooks/useTheme";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 ChartJS.register(
   CategoryScale,
@@ -37,7 +39,10 @@ export default function Analytics() {
   const { data: monthlyData } = useGetMonthlyShipmentsQuery({});
   const { data: distributionData } = useGetStatusDistributionQuery({});
   const { data: trendsData } = useGetParcelTrendsQuery({});
+  const { data } = useGetParcelOverviewQuery({});
   const { theme } = useTheme();
+  const overviewData = data?.data;
+  //console.log(overviewData);
 
   const labelColor = theme === "dark" ? "#fff" : "#000";
   const gridColor =
@@ -83,29 +88,28 @@ export default function Analytics() {
   };
 
   // Status Distribution Pie Chart
-  // Fixed color mapping
-const statusColorMap: Record<string, string> = {
-  Requested: "#FFCE56",
-  "In Transit": "#9966FF",
-  Delivered: "#4BC0C0",
-  Returned: "#FF9F40",
-  Approved: "#36A2EB",
-  Canceled: "#FF6384",
-};
+  const statusColorMap: Record<string, string> = {
+    Requested: "#FFCE56",
+    "In Transit": "#9966FF",
+    Delivered: "#4BC0C0",
+    Returned: "#FF9F40",
+    Approved: "#36A2EB",
+    Canceled: "#FF6384",
+  };
 
-const distributionChartData = {
-  labels: distributionData?.data.map((item: any) => String(item.status)) || [],
-  datasets: [
-    {
-      label: "Status Distribution",
-      data: distributionData?.data.map((item: any) => Number(item.count)) || [],
-      backgroundColor:
-        distributionData?.data.map(
-          (item: any) => statusColorMap[String(item.status)] || "#999999"
-        ) || [],
-    },
-  ],
-};
+  const distributionChartData = {
+    labels: distributionData?.data.map((item: any) => String(item.status)) || [],
+    datasets: [
+      {
+        label: "Status Distribution",
+        data: distributionData?.data.map((item: any) => Number(item.count)) || [],
+        backgroundColor:
+          distributionData?.data.map(
+            (item: any) => statusColorMap[String(item.status)] || "#999999"
+          ) || [],
+      },
+    ],
+  };
 
   const distributionChartOptions = {
     plugins: {
@@ -160,30 +164,60 @@ const distributionChartData = {
   };
 
   return (
-    <div className="md:scale-x-(0.90) w-full max-w-5xl mx-auto space-y-10 px-5 mb-28">
-      <h1 className="text-4xl font-semibold text-orange-500 dark:text-orange-400">OVERVIEW</h1>
-      <div className="lg:flex justify-between items-start gap-8">
+    <div className="w-full max-w-5xl mx-auto space-y-10 px-5 mb-28">
+      <h1 className="text-4xl font-semibold text-orange-500 dark:text-orange-400">ANALYTICS</h1>
+
+      {/* Parcel Overview */}
+      <div className="w-full">
+        <h2 className="font-semibold text-lg mb-2">Parcel Overview</h2>
+        <div className="overflow-x-auto w-full">
+          <div className="bg-background overflow-hidden rounded-md border w-full">
+            <Table className="w-full table-fixed">
+              <TableBody>
+                <TableRow className="border-b border-border hover:bg-transparent [&>:not(:last-child)]:border-r">
+                  <TableCell className="bg-muted/50 py-2 font-medium">Delivered</TableCell>
+                  <TableCell className="py-2 text-center">{overviewData?.delivered}</TableCell>
+                </TableRow>
+                <TableRow className="border-b border-border hover:bg-transparent [&>:not(:last-child)]:border-r">
+                  <TableCell className="bg-muted/50 py-2 font-medium">In Transit</TableCell>
+                  <TableCell className="py-2 text-center">{overviewData?.inTransit}</TableCell>
+                </TableRow>
+                <TableRow className="border-b border-border hover:bg-transparent [&>:not(:last-child)]:border-r">
+                  <TableCell className="bg-muted/50 py-2 font-medium">Pending</TableCell>
+                  <TableCell className="py-2 text-center">{overviewData?.pending}</TableCell>
+                </TableRow>
+                <TableRow className="border-b border-border hover:bg-transparent [&>:not(:last-child)]:border-r">
+                  <TableCell className="bg-muted/50 py-2 font-medium">Canceled</TableCell>
+                  <TableCell className="py-2 text-center">{overviewData?.canceled}</TableCell>
+                </TableRow>
+                <TableRow className="hover:bg-transparent [&>:not(:last-child)]:border-r">
+                  <TableCell className="bg-muted/50 py-2 font-medium">Total</TableCell>
+                  <TableCell className="py-2 text-center">{overviewData?.total}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      </div>
+
+      {/* Charts */}
+      <div className="lg:flex justify-between items-start gap-8 my-16 lg:my-28">
         <div className="w-full">
-          <h2 className="text-lg font-semibold mb-3 dark:text-white">
-            Status Distribution
-          </h2>
+          <h2 className="text-lg font-semibold mb-3 dark:text-white">Status Distribution</h2>
           <Pie data={distributionChartData} options={distributionChartOptions} />
         </div>
 
-        <div className="w-full my-28 lg:my-20 lg:h-[400px]">
-          <h2 className="text-lg font-semibold mb-3 dark:text-white">
-            Parcel Trends (Month-wise)
-          </h2>
-          <Bar data={(trendsChartData as any)} options={trendsChartOptions} />
+        <div className="w-full lg:h-[400px] mt-16 lg:mt-0">
+          <h2 className="text-lg font-semibold mb-3 dark:text-white">Parcel Trends (Month-wise)</h2>
+          <Bar data={trendsChartData as any} options={trendsChartOptions} />
         </div>
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold mb-3 dark:text-white">
-          Monthly Shipments (Current Year)
-        </h2>
+        <h2 className="text-lg font-semibold mb-3 dark:text-white">Monthly Shipments (Current Year)</h2>
         <Line data={monthlyChartData} options={monthlyChartOptions} />
       </div>
     </div>
+
   );
 }
