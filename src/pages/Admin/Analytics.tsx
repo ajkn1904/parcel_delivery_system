@@ -160,7 +160,7 @@ const distributionChartData = {
   };
 
   return (
-    <div className="md:scale-x-(0.90) w-full max-w-6xl mx-auto space-y-10 px-5 mb-28">
+    <div className="md:scale-x-(0.90) w-full max-w-5xl mx-auto space-y-10 px-5 mb-28">
       <h1 className="text-4xl font-semibold text-orange-500 dark:text-orange-400">OVERVIEW</h1>
       <div className="lg:flex justify-between items-start gap-8">
         <div className="w-full">
@@ -170,7 +170,7 @@ const distributionChartData = {
           <Pie data={distributionChartData} options={distributionChartOptions} />
         </div>
 
-        <div className="w-full my-28 lg:my-0 lg:h-[400px]">
+        <div className="w-full my-28 lg:my-20 lg:h-[400px]">
           <h2 className="text-lg font-semibold mb-3 dark:text-white">
             Parcel Trends (Month-wise)
           </h2>
@@ -180,7 +180,7 @@ const distributionChartData = {
 
       <div>
         <h2 className="text-lg font-semibold mb-3 dark:text-white">
-          Monthly Shipments
+          Monthly Shipments (Current Year)
         </h2>
         <Line data={monthlyChartData} options={monthlyChartOptions} />
       </div>

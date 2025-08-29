@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useGetAllUserQuery, useUpdateUserMutation } from "@/redux/features/user/user.api";
-import GetPagination from "@/utils/getPagination";
+import GetPagination from "@/utils/GetPagination";
 import { SkeletonCard } from "@/utils/SkeletonCard";
 import { ArchiveRestoreIcon, Ban, Check, Trash2, UserCheckIcon} from "lucide-react";
 import { useState } from "react";
@@ -88,7 +88,7 @@ export default function ManageUser() {
     return (
         <div className="w-full max-w-7xl mx-auto px-5">
         <div className="flex justify-between my-8">
-            <h1 className="text-xl font-semibold">User : {data ? total : 0}</h1>
+            <h1 className="text-4xl font-semibold text-orange-500 dark:text-orange-400">USER : {data ? total : 0}</h1>
 
 
             {/* ⬇️ Role filter */}
