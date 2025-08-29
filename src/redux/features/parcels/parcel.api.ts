@@ -21,6 +21,14 @@ export const parcelApi = baseApi.injectEndpoints({
         }),
         getSingleParcel: builder.query({
             query: ({id}) => ({
+                url: `/parcel/${id}`,
+                method: "GET",
+            }),
+        providesTags: ["PARCEL"],
+        transformResponse: (response) => response.data
+        }),
+        trackParcel: builder.query({
+            query: ({id}) => ({
                 url: `/parcel/history/${id}`,
                 method: "GET",
             }),
@@ -60,5 +68,6 @@ export const {
     useGetSingleParcelQuery,
     useUpdateParcelMutation,
     useUpdateParcelByAdminMutation,
-    useDeleteParcelMutation
+    useDeleteParcelMutation,
+    useTrackParcelQuery
 } = parcelApi;

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams, useNavigate } from "react-router";
-import { useGetSingleParcelQuery } from "@/redux/features/parcels/parcel.api";
+import { useTrackParcelQuery } from "@/redux/features/parcels/parcel.api";
 import { Stepper, StepperDescription, StepperIndicator, StepperItem, StepperSeparator, StepperTitle } from "@/components/ui/stepper";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -11,7 +11,7 @@ const { trackingId } = useParams<{ trackingId: string }>();
 const navigate = useNavigate();
 
 
-const { data, isLoading } = useGetSingleParcelQuery({ id: trackingId });
+const { data, isLoading } = useTrackParcelQuery({ id: trackingId });
 
 
   //console.log(data);
