@@ -110,6 +110,25 @@
   --sidebar-ring: oklch(0.488 0.243 264.376);
 }
 
+@layer components {
+  /* Country select dropdown */
+  .phone-input select {
+    @apply bg-background text-foreground border-input rounded-md;
+  }
+
+  /* Options inside the dropdown */
+  .phone-input option {
+    @apply bg-background text-foreground;
+  }
+
+  /* Focus state (matches shadcn/ui style) */
+  .phone-input select:focus {
+    @apply ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}
+
+
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

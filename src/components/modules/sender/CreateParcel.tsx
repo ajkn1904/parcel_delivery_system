@@ -2,304 +2,369 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  FormControl,
-} from "@/components/ui/form";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { useGetAllReceiversQuery } from "@/redux/features/user/user.api";
+import { useCreateParcelMutation } from "@/redux/features/parcels/parcel.api";
+import { useGetAllCouponsQuery } from "@/redux/features/coupons/coupon.api";
+import { toast } from "sonner";
 import { useNavigate } from "react-router";
 
-import { toast } from "sonner";
-import { useGetAllCouponsQuery } from "@/redux/features/coupons/coupon.api";
-import { useCreateParcelMutation } from "@/redux/features/parcels/parcel.api";
+import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { ArrowLeft, CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import Phone from "@/components/ui/Phone";
 
-// === enums (sync with your backend ParcelType, DeliveryMethod, PaymentMethod) ===
-const ParcelType = {
-  Document: "Document",
-  Box: "Box",
-  Fragile: "Fragile",
-  Perishable: "Perishable",
-} as const;
 
-const DeliveryMethod = {
-  Regular: "Regular",
-  Express: "Express",
-  SameDay: "SameDay",
-} as const;
 
-const PaymentMethod = {
-  CashOnDelivery: "CashOnDelivery",
-  OnlinePayment: "OnlinePayment",
-} as const;
-
-// === zod schema for frontend form validation ===
 const createParcelFormSchema = z.object({
-  receiver: z.string().min(1, "Receiver ID is required"),
-  parcelType: z.nativeEnum(ParcelType),
-  weight: z.coerce.number().positive("Weight must be greater than 0"),
-  deliveryMethod: z.nativeEnum(DeliveryMethod),
-  deliveryAddress: z.string().min(5, "Delivery address is required"),
-  pickupAddress: z.string().min(5, "Pickup address is required"),
-  deliveryDistance: z.coerce.number().nonnegative("Distance must be valid"),
-  contactPhone: z
-    .string()
-    .regex(/^(?:\+8801\d{9}|01\d{9})$/, {
-      message:
-        "Phone number must be valid for Bangladesh. Format: +8801XXXXXXXXX or 01XXXXXXXXX",
-    }),
-  estimatedDeliveryDate: z.string().min(1, "Estimated date is required"),
-  paymentMethod: z.nativeEnum(PaymentMethod),
-  coupon: z.string().optional(),
+    receiver: z.string().min(1, "Receiver is required"),
+    coupon: z.string().optional(),
+    parcelType: z.enum(["Documents", "Electronics", "Clothing", "Grocery", "Other"]),
+    deliveryMethod: z.enum(["Agent", "Hub"]),
+    paymentMethod: z.enum(["Cash on Delivery", "Online Payment"]),
+    pickupAddress: z.string().min(5, "Pickup address is too short"),
+    deliveryAddress: z.string().min(5, "Delivery address is too short"),
+    contactPhone: z
+        .string()
+        .regex(/^(?:\+8801\d{9}|01\d{9})$/, "Invalid Bangladesh phone number"),
+    weight: z.number().positive("Weight must be greater than 0"),
+    deliveryDistance: z.number().nonnegative("Distance cannot be negative"),
+    estimatedDeliveryDate: z.date({ error: "Estimated delivery date is required" }),
 });
 
-type CreateParcelFormValues = any;
-
 export default function CreateParcel() {
-  const navigate = useNavigate();
-  const { parcelData } = useCreateParcelMutation(undefined);
-  const { data: couponsData } = useGetAllCouponsQuery(undefined);
-  const coupons = couponsData?.data ?? [];
+    const { data: receivers = [] } = useGetAllReceiversQuery({});
+    const { data: coupons } = useGetAllCouponsQuery({});
+    const [createParcel] = useCreateParcelMutation();
+    const navigate = useNavigate();
 
-  const form = useForm<CreateParcelFormValues>({
-    resolver: zodResolver(createParcelFormSchema),
-    defaultValues: {
-      parcelType: ParcelType.Document,
-      deliveryMethod: DeliveryMethod.Regular,
-      paymentMethod: PaymentMethod.CashOnDelivery,
-    },
-  });
+    const form = useForm<any>({
+        resolver: zodResolver(createParcelFormSchema),
+        defaultValues: {
+            receiver: "",
+            coupon: "none",
+            parcelType: "Documents",
+            deliveryMethod: "Agent",
+            paymentMethod: "Cash on Delivery",
+            pickupAddress: "Dhaka",
+            deliveryAddress: "Chittagong",
+            contactPhone: "+8801234567890",
+            weight: 1,
+            deliveryDistance: 250,
+            estimatedDeliveryDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+        },
+    });
 
-  const onSubmit = async (values: CreateParcelFormValues) => {
-    try {
-      // call your parcel API mutation here (not shown in your snippets)
-      const res = await parcelData(values).unwrap();
-      console.log(res);
-      toast.success("Parcel created successfully!");
-      navigate("/parcels");
-    } catch (error: any) {
-      console.error(error);
-      toast.error("Failed to create parcel");
-    }
-  };
+    const { control, handleSubmit } = form;
 
-  return (
-    <div className="max-w-2xl mx-auto p-6 bg-white dark:bg-neutral-900 rounded-xl shadow">
-      <h1 className="text-2xl font-semibold mb-6">Create Parcel</h1>
+    const parcelTypes = ["Documents", "Electronics", "Clothing", "Grocery", "Other"];
+    const deliveryMethods = ["Agent", "Hub"];
+    const paymentMethods = ["Cash on Delivery", "Online Payment"];
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-          {/* Receiver */}
-          <FormField
-            control={form.control}
-            name="receiver"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Receiver (User ID)</FormLabel>
-                <FormControl>
-                  <Input placeholder="Receiver user ID" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    const onSubmit = async (data: any) => {
+        try {
+            const payload = {
+                ...data,
+                weight: Number(data.weight),
+                deliveryDistance: Number(data.deliveryDistance),
+                estimatedDeliveryDate: data.estimatedDeliveryDate.toISOString(),
+            };
 
-          {/* Parcel Type */}
-          <FormField
-            control={form.control}
-            name="parcelType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Parcel Type</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select parcel type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.values(ParcelType).map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            if (!data.coupon || data.coupon === "none") {
+                delete payload.coupon;
+            } else {
+                payload.coupon = data.coupon;
+            }
 
-          {/* Weight */}
-          <FormField
-            control={form.control}
-            name="weight"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Weight (kg)</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="Weight in kg" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            const res = await createParcel(payload).unwrap();
+            toast.success(`Parcel created! Tracking ID: ${res.trackingId}`);
+            navigate(-1);
+        } catch (err: any) {
+            toast.error(err.data?.message || "Something went wrong!");
+        }
+    };
 
-          {/* Delivery Method */}
-          <FormField
-            control={form.control}
-            name="deliveryMethod"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Delivery Method</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select delivery method" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.values(DeliveryMethod).map((method) => (
-                      <SelectItem key={method} value={method}>
-                        {method}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    return (
+        <div className="w-[90%] max-w-3xl mx-auto mt-8 mb-20">
+            <h1 className="text-4xl font-semibold text-orange-500 dark:text-orange-400 mb-10">Create Parcel</h1>
+            <div className=" p-5 border rounded-md">
+                <Form {...form}>
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
-          {/* Delivery Address */}
-          <FormField
-            control={form.control}
-            name="deliveryAddress"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Delivery Address</FormLabel>
-                <FormControl>
-                  <Input placeholder="Delivery address" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                        {/* Receiver*/}
+                        <FormField
+                            control={control}
+                            name="receiver"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Receiver</FormLabel>
+                                    <FormControl className="w-full">
+                                        <Select value={field.value} onValueChange={field.onChange}>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {receivers.map((r: any) => (
+                                                    <SelectItem key={r._id} value={r._id}>
+                                                        {r.email}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-          {/* Pickup Address */}
-          <FormField
-            control={form.control}
-            name="pickupAddress"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Pickup Address</FormLabel>
-                <FormControl>
-                  <Input placeholder="Pickup address" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                        {/* Parcel Type & weight */}
+                        <div className="flex gap-4">
 
-          {/* Delivery Distance */}
-          <FormField
-            control={form.control}
-            name="deliveryDistance"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Delivery Distance (km)</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="Distance in km" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                            <FormField
+                                control={control}
+                                name="parcelType"
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Parcel Type</FormLabel>
+                                        <FormControl>
+                                            <Select value={field.value} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select parcel type" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {parcelTypes.map((type) => (
+                                                        <SelectItem key={type} value={type}>
+                                                            {type}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-          {/* Contact Phone */}
-          <FormField
-            control={form.control}
-            name="contactPhone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Contact Phone</FormLabel>
-                <FormControl>
-                  <Input placeholder="+8801XXXXXXXXX" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                            <FormField
+                                control={control}
+                                name="weight"
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Weight (kg)</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                value={field.value || ""}
+                                                onChange={(e) => field.onChange(Number(e.target.value))}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-          {/* Estimated Delivery Date */}
-          <FormField
-            control={form.control}
-            name="estimatedDeliveryDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Estimated Delivery Date</FormLabel>
-                <FormControl>
-                  <Input type="date" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                        </div>
 
-          {/* Payment Method */}
-          <FormField
-            control={form.control}
-            name="paymentMethod"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Payment Method</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select payment method" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.values(PaymentMethod).map((method) => (
-                      <SelectItem key={method} value={method}>
-                        {method}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                        {/* Delivery Method & Payment Method */}
+                        <div className="flex gap-4">
+                            <FormField
+                                control={control}
+                                name="deliveryMethod"
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Delivery Method</FormLabel>
+                                        <FormControl>
+                                            <Select value={field.value} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select delivery method" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {deliveryMethods.map((method) => (
+                                                        <SelectItem key={method} value={method}>
+                                                            {method}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-          {/* Coupon Dropdown */}
-          <FormField
-            control={form.control}
-            name="coupon"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Coupon (optional)</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a coupon" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {coupons.map((coupon: any) => (
-                      <SelectItem key={coupon._id} value={coupon._id}>
-                        {coupon.code} ({coupon.discountPercentage}% off)
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                            <FormField
+                                control={control}
+                                name="paymentMethod"
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Payment Method</FormLabel>
+                                        <FormControl>
+                                            <Select value={field.value} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select payment method" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {paymentMethods.map((method) => (
+                                                        <SelectItem key={method} value={method}>
+                                                            {method}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
 
-          <Button type="submit" className="w-full">
-            Create Parcel
-          </Button>
-        </form>
-      </Form>
-    </div>
-  );
+                        {/* Pickup Address */}
+                        <FormField
+                            control={control}
+                            name="pickupAddress"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Pickup Address</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} placeholder="Pickup address" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        {/* Delivery Address */}
+                        <FormField
+                            control={control}
+                            name="deliveryAddress"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Delivery Address</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} placeholder="Delivery address" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        {/* Delivery Distance & coupon*/}
+                        <div className="flex gap-4">
+
+                            <FormField
+                                control={control}
+                                name="deliveryDistance"
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Delivery Distance (km)</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                value={field.value || ""}
+                                                onChange={(e) => field.onChange(Number(e.target.value))}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={control}
+                                name="coupon"
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Coupon</FormLabel>
+                                        <FormControl>
+                                            <Select value={field.value} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select coupon (optional)" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="none">No coupon</SelectItem>
+                                                    {coupons?.data?.map((c: any) => (
+                                                        <SelectItem key={c._id} value={c._id}>
+                                                            {c.code} ({c.discountPercentage}%)
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        {/* Estimated Delivery Date & Contact Phone */}
+                        <div className="flex gap-4">
+                            <FormField
+                                control={control}
+                                name="estimatedDeliveryDate"
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Estimated Delivery Date</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant={"outline"}
+                                                        className={cn(
+                                                            "w-full pl-3 text-left font-normal",
+                                                            !field.value && "text-muted-foreground"
+                                                        )}
+                                                    >
+                                                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="start">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={field.value}
+                                                    onSelect={field.onChange}
+                                                    disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))}
+                                                    captionLayout="dropdown"
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={control}
+                                name="contactPhone"
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Contact Phone</FormLabel>
+                                        <FormControl>
+                                            <Phone {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        {/* Submit Buttons */}
+                        <div className="flex justify-end gap-2 mt-8">
+                            <Button variant={"outline"} onClick={() => navigate(-1)}>
+                                <ArrowLeft className="w-4 h-4" /> BACK
+                            </Button>
+                            <Button type="submit" className="text-white">
+                                CREATE
+                            </Button>
+                        </div>
+                    </form>
+                </Form>
+            </div>
+        </div>
+    );
 }

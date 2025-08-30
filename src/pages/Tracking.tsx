@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, useLocation } from "react-router";
 import { useTrackParcelQuery } from "@/redux/features/parcels/parcel.api";
 import { Stepper, StepperDescription, StepperIndicator, StepperItem, StepperSeparator, StepperTitle } from "@/components/ui/stepper";
 import { Button } from "@/components/ui/button";
@@ -7,25 +7,26 @@ import { ArrowLeft } from "lucide-react";
 import { SkeletonCard } from "@/utils/SkeletonCard";
 
 export default function Tracking() {
-const { trackingId } = useParams<{ trackingId: string }>();
-const navigate = useNavigate();
+  const { parcelId } = useParams<{ parcelId: string }>();
+  const navigate = useNavigate();
+  const { state } = useLocation()
+  const trackingId = state?.trackingId;
+
+  const { data, isLoading } = useTrackParcelQuery({ id: parcelId });
 
 
-const { data, isLoading } = useTrackParcelQuery({ id: trackingId });
-
-
-  //console.log(data);
-
+  // console.log(parcelId);
+  // console.log(trackingId);
   //const parcel = data?.data;
 
-  if (isLoading) return <SkeletonCard/>;
+  if (isLoading) return <SkeletonCard />;
   if (!data || data.length === 0) return <div>
-      <p>No tracking information found.</p>;
-      <Button variant="default" className="flex items-center gap-2 dark:text-foreground hover:bg-blue-600 dark:hover:bg-blue-700" onClick={() => navigate(-1)}>
-          <ArrowLeft className="w-4 h-4" />
-          Back
-      </Button>
-    </div>
+    <p>No Tracking History Found!</p>;
+    <Button variant="default" className="flex items-center gap-2 dark:text-foreground hover:bg-blue-600 dark:hover:bg-blue-700" onClick={() => navigate(-1)}>
+      <ArrowLeft className="w-4 h-4" />
+      Back
+    </Button>
+  </div>
 
   const steps = data.map((event: any, index: number) => ({
     step: index + 1,
@@ -38,8 +39,8 @@ const { data, isLoading } = useTrackParcelQuery({ id: trackingId });
 
   return (
     <div className="w-[95%] max-w-2xl mx-auto my-10 space-y-8">
-      <h1 className="text-2xl font-semibold text-center">
-        Tracking History for {data.trackingId}
+      <h1 className="text-2xl lg:text-4xl font-semibold text-center">
+        Tracking History for <span className="text-orange-500 dark:text-orange-400">{trackingId}</span>
       </h1>
 
       <Stepper defaultValue={steps.length + 1} orientation="vertical" className="ml-10 lg:ml-0">
@@ -53,7 +54,7 @@ const { data, isLoading } = useTrackParcelQuery({ id: trackingId });
                 <StepperDescription>{time}</StepperDescription>
                 {location && <StepperDescription>{location}</StepperDescription>}
                 {updatedByRole && <StepperDescription> <span className="font-bold">Updated By: </span>{updatedByRole}</StepperDescription>}
-                
+
               </div>
             </div>
 

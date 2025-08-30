@@ -57,7 +57,7 @@ export default function Parcel() {
             <div className="flex justify-between lg:items-center my-8">
                 <div>
                     <h1 className="text-3xl lg:text-4xl font-semibold text-orange-500 dark:text-orange-400">PARCEL: {total}</h1>
-                    <Button><Link to={"/parcel/create"}>Create Parcel</Link></Button>
+                    <Button className="my-8 text-white"><Link to={"/parcel/create"}>CREATE PARCEL</Link></Button>
                 </div>
 
                 <ParcelSearchFilter />
@@ -115,7 +115,9 @@ export default function Parcel() {
                                     <TableCell className="flex justify-between gap-2 border-l-2">
 
                                         <Button variant={"outline"} size="sm" className="text-orange-500 hover:bg-orange-500 hover:text-white"
-                                            onClick={() => navigate(`/tracking/${parcel._id}`)}>
+                                            onClick={() => navigate(`/tracking/${parcel._id}`, {
+                                                state: { trackingId: parcel.trackingId },
+                                            })}>
                                             TRACK
                                         </Button>
                                         <Button size="sm" className="text-white"

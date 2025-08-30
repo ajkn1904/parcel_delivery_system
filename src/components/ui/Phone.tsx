@@ -45,6 +45,7 @@ export default function Phone({onChange, ...field }: PhoneProps) {
         inputComponent={PhoneInput}
         onChange={handleChange}
         {...field}
+        className="phone-input"
       />
     </div>
   )

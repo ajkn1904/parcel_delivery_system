@@ -54,7 +54,7 @@ export const router = createBrowserRouter([
             
             {
                 Component: withAuth(Tracking),
-                path: "/tracking/:trackingId"
+                path: "/tracking/:parcelId"
             },
             {
                 Component: withAuth(CreateParcel),

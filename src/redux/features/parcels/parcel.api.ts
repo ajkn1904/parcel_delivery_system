@@ -4,7 +4,7 @@ export const parcelApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         createParcel: builder.mutation({
         query: (parcelData) => ({
-            url: "/parcel",
+            url: "/parcel/create",
             method: "POST",
             data: parcelData,
         }),
