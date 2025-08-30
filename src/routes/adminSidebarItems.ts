@@ -1,11 +1,14 @@
-import ManageCoupon from "@/pages/Admin/ManageCoupon";
-import ManageParcel from "@/pages/Admin/ManageParcel";
-import ManageUser from "@/pages/Admin/ManageUser";
+// import ManageCoupon from "@/pages/Admin/ManageCoupon";
+// import ManageParcel from "@/pages/Admin/ManageParcel";
+// import ManageUser from "@/pages/Admin/ManageUser";
 import type { ISidebarItems } from "@/types";
 import { lazy } from "react";
 
 
 const Analytics = lazy(() => import("@/pages/Admin/Analytics"))
+const ManageCoupon = lazy(() => import("@/pages/Admin/ManageCoupon"))
+const ManageParcel = lazy(() => import("@/pages/Admin/ManageParcel"))
+const ManageUser = lazy(() => import("@/pages/Admin/ManageUser"))
 
 export const adminSidebarItems: ISidebarItems[] = [
     {

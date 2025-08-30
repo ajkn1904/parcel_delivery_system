@@ -1,8 +1,14 @@
 
-import Coupon from "@/pages/Sender/Coupon";
-import History from "@/pages/Sender/History";
-import Parcel from "@/pages/Sender/Parcel";
+//import Coupon from "@/pages/Sender/Coupon";
+//import History from "@/pages/Sender/History";
+//import Parcel from "@/pages/Sender/Parcel";
 import type { ISidebarItems } from "@/types";
+import { lazy } from "react";
+
+const History = lazy(() => import("@/pages/Sender/History"))
+const Parcel = lazy(() => import("@/pages/Sender/Parcel"))
+const Coupon = lazy(() => import("@/pages/Sender/Coupon"))
+
 
 export const senderSidebarItems: ISidebarItems[] = [
         {
