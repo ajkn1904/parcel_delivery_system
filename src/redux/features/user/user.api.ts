@@ -11,6 +11,15 @@ export const userApi = baseApi.injectEndpoints({
         providesTags: ["USERS"],
         transformResponse: (response) => response.data,
         }),
+        getAllReceivers: builder.query({
+        query: (params) => ({
+            url: "/user/receivers",
+            method: "GET",
+            params
+        }),
+        providesTags: ["USERS"],
+        transformResponse: (response) => response.data,
+        }),
         getSingleUser: builder.query({
             query: ({id}) => ({
                 url: `/user/${id}`,
@@ -35,5 +44,6 @@ export const userApi = baseApi.injectEndpoints({
 export const {
     useGetAllUserQuery,
     useGetSingleUserQuery,
-    useUpdateUserMutation
+    useUpdateUserMutation,
+    useGetAllReceiversQuery
 } = userApi;

@@ -16,6 +16,7 @@ import { generateRoutes } from "@/utils/generateRoutes";
 import { withAuth } from '@/utils/withAuth'
 import { receiverSidebarItems } from './receiverSidebarItems'
 import Tracking from '@/pages/Tracking'
+import CreateParcel from '@/components/modules/sender/CreateParcel'
 
 export const router = createBrowserRouter([
     {
@@ -54,6 +55,10 @@ export const router = createBrowserRouter([
             {
                 Component: withAuth(Tracking),
                 path: "/tracking/:trackingId"
+            },
+            {
+                Component: withAuth(CreateParcel),
+                path: "/parcel/create"
             },
             {
                     Component: withAuth(DashboardLayout, (role.admin) as TRole),
