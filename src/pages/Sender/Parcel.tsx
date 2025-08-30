@@ -9,12 +9,12 @@ import { toast } from "sonner";
 import ParcelSearchFilter from "@/utils/ParcelSearchFilter";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import BlockOrCancelOrDeleteConfirmation from "@/components/BlockOrCancelOrDeleteConfirmation";
+import ParcelDetailsModal from "@/utils/ParcelDetailsModal";
 
 export default function Parcel() {
     const [currentPage, setCurrentPage] = useState(1);
     const parcelsPerPage = 10;
-    const navigate = useNavigate()
-
+    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
     const currentStatus = searchParams.get("currentStatus") || undefined;
@@ -22,7 +22,6 @@ export default function Parcel() {
     const sort = searchParams.get("sort") || undefined;
     const search = searchParams.get("search") || undefined;
 
-    // Pass pagination params to backend query
     const { data, isLoading } = useGetAllParcelsQuery({
         currentStatus,
         parcelType,
@@ -33,10 +32,13 @@ export default function Parcel() {
     });
 
     const parcelData = data?.data ?? [];
-    //console.log(parcelData);
     const total = data?.meta?.total ?? 0;
     const totalPage = Math.ceil(total / parcelsPerPage);
     const [updateParcel] = useUpdateParcelMutation();
+
+    // Modal state
+    const [selectedParcelId, setSelectedParcelId] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleParcelStatus = async (parcel: any) => {
         const toastId = toast.loading("Updating parcel status...");
@@ -49,43 +51,47 @@ export default function Parcel() {
         }
     };
 
-    if (isLoading) return <SkeletonCard />;
+    const openModal = (parcelId: string) => {
+        setSelectedParcelId(parcelId);
+        setIsModalOpen(true);
+    };
 
+    const closeModal = () => {
+        setSelectedParcelId(null);
+        setIsModalOpen(false);
+    };
+
+    if (isLoading) return <SkeletonCard />;
 
     return (
         <div className="w-full max-w-6xl mx-auto px-5">
             <div className="flex justify-between lg:items-center my-8">
                 <div>
-                    <h1 className="text-3xl lg:text-4xl font-semibold text-orange-500 dark:text-orange-400">PARCEL: {total}</h1>
-                    <Button className="my-8 text-white"><Link to={"/parcel/create"}>CREATE PARCEL</Link></Button>
+                    <h1 className="text-3xl lg:text-4xl font-semibold text-orange-500 dark:text-orange-400">
+                        PARCEL: {total}
+                    </h1>
+                    <Button className="my-8 text-white">
+                        <Link to={"/parcel/create"}>CREATE PARCEL</Link>
+                    </Button>
                 </div>
-
                 <ParcelSearchFilter />
             </div>
 
             <div className="border border-muted rounded-md">
-                {isLoading && <SkeletonCard />}
-                {parcelData < 1 ?
+                {parcelData.length < 1 ? (
                     <p className="font-bold text-xl text-center mx-auto">No Data Found</p>
-                    :
+                ) : (
                     <Table>
                         <TableHeader className="bg-blue-200 dark:bg-blue-900">
-                            <TableRow >
+                            <TableRow>
                                 <TableHead className="border-r-2">No.</TableHead>
                                 <TableHead>Tracking ID</TableHead>
                                 <TableHead>Receiver</TableHead>
-                                {/* <TableHead className="w-[200px]">Address</TableHead> */}
                                 <TableHead>Type</TableHead>
-                                {/* <TableHead>Weight (kg)</TableHead>
-                                <TableHead>Delivery Fee</TableHead>
-                                <TableHead>Discount</TableHead> */}
                                 <TableHead>After Discount</TableHead>
-                                {/* <TableHead>Payment Method</TableHead>
-                                <TableHead>Delivery Method</TableHead> */}
                                 <TableHead>Status</TableHead>
                                 <TableHead>Location</TableHead>
                                 <TableHead>Updated</TableHead>
-                                {/* <TableHead>Created</TableHead> */}
                                 <TableHead className="border-l-2 text-center">Action</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -93,74 +99,62 @@ export default function Parcel() {
                         <TableBody>
                             {parcelData.map((parcel: any, index: number) => (
                                 <TableRow key={parcel._id}>
-                                    <TableCell className="font-medium border-r-2">{(currentPage - 1) * parcelsPerPage + index + 1}</TableCell>
+                                    <TableCell className="font-medium border-r-2">
+                                        {(currentPage - 1) * parcelsPerPage + index + 1}
+                                    </TableCell>
                                     <TableCell className="font-medium">{parcel.trackingId}</TableCell>
                                     <TableCell>{parcel.receiver?.email ?? "Unknown"}</TableCell>
-                                    {/* <TableCell className="max-w-[200px]">
-                                        <div className="truncate">
-                                            {parcel.deliveryAddress}
-                                        </div>
-                                    </TableCell> */}
                                     <TableCell>{parcel.parcelType}</TableCell>
-                                    {/* <TableCell>{parcel.weight}</TableCell>
-                                    <TableCell>{Math.round(parcel.deliveryFee)} tk</TableCell>
-                                    <TableCell>{parcel.discountAmount}</TableCell> */}
-                                    <TableCell>{parcel.afterDiscountDeliveryFee ? Math.round(parcel.afterDiscountDeliveryFee) + 'tk' : Math.round(parcel.deliveryFee) + ' tk'}</TableCell>
-                                    {/* <TableCell>{parcel.paymentMethod}</TableCell>
-                                    <TableCell>{parcel.deliveryMethod}</TableCell> */}
+                                    <TableCell>
+                                        {parcel.afterDiscountDeliveryFee
+                                            ? Math.round(parcel.afterDiscountDeliveryFee) + " tk"
+                                            : Math.round(parcel.deliveryFee) + " tk"}
+                                    </TableCell>
                                     <TableCell className="font-medium">{parcel.currentStatus}</TableCell>
-                                    <TableCell className="font-medium">{parcel?.trackingEvents?.[parcel.trackingEvents.length - 1].location ?? "N/A"}</TableCell>
+                                    <TableCell className="font-medium">
+                                        {parcel?.trackingEvents?.[parcel.trackingEvents.length - 1].location ?? "N/A"}
+                                    </TableCell>
                                     <TableCell>{new Date(parcel.updatedAt).toDateString()}</TableCell>
-                                    {/* <TableCell>{new Date(parcel.createdAt).toDateString()}</TableCell> */}
                                     <TableCell className="flex justify-between gap-2 border-l-2">
-
-                                        <Button variant={"outline"} size="sm" className="text-orange-500 hover:bg-orange-500 hover:text-white"
-                                            onClick={() => navigate(`/tracking/${parcel._id}`, {
-                                                state: { trackingId: parcel.trackingId },
-                                            })}>
+                                        <Button
+                                            variant={"outline"}
+                                            size="sm"
+                                            className="text-orange-500 hover:bg-orange-500 hover:text-white"
+                                            onClick={() => navigate(`/tracking/${parcel._id}`, { state: { trackingId: parcel.trackingId } })}
+                                        >
                                             TRACK
                                         </Button>
-                                        <Button size="sm" className="text-white"
-                                        // onClick={() => navigate(`/tracking/${parcel._id}`)}
-                                        >
+
+                                        {/* OPEN MODAL ON CLICK */}
+                                        <Button size="sm" className="text-white" onClick={() => openModal(parcel._id)}>
                                             VIEW
                                         </Button>
 
-
-                                        {/* <ParcelModal
-                                            tId={parcel.trackingId}
-                                            sender={parcel.sender?.email ?? "Unknown"}
-                                            receiver={parcel.receiver?.email ?? "Unknown"}
-                                            parcelData={parcel}
-                                        /> */}
-
-                                        {
-                                            (parcel.currentStatus === "Requested" || parcel.currentStatus === "Approved") ?
-
-                                                <BlockOrCancelOrDeleteConfirmation onConfirm={() => handleParcelStatus(parcel)} actionType={"cancel"} customTitle={parcel.trackingId}
-                                                >
-                                                    <Button variant={"destructive"} size="sm" className="w-[76px] ">
-                                                        CANCEL
-                                                    </Button>
-                                                </BlockOrCancelOrDeleteConfirmation>
-                                                :
-                                                parcel.currentStatus === "Canceled" ?
-                                                    <Button variant={"outline"} size="sm" className=" text-red-500 dark:text-red-400" disabled>
-                                                        CANCELED
-                                                    </Button>
-                                                    :
-                                                    <Button variant={"outline"} size="sm" className=" text-green-600 dark:text-green-500" disabled>
-                                                        DISPATCH
-                                                    </Button>
-
-                                        }
-
+                                        {(parcel.currentStatus === "Requested" || parcel.currentStatus === "Approved") ? (
+                                            <BlockOrCancelOrDeleteConfirmation
+                                                onConfirm={() => handleParcelStatus(parcel)}
+                                                actionType={"cancel"}
+                                                customTitle={parcel.trackingId}
+                                            >
+                                                <Button variant={"destructive"} size="sm" className="w-[76px] ">
+                                                    CANCEL
+                                                </Button>
+                                            </BlockOrCancelOrDeleteConfirmation>
+                                        ) : parcel.currentStatus === "Canceled" ? (
+                                            <Button variant={"outline"} size="sm" className=" text-red-500 dark:text-red-400" disabled>
+                                                CANCELED
+                                            </Button>
+                                        ) : (
+                                            <Button variant={"outline"} size="sm" className=" text-green-600 dark:text-green-500" disabled>
+                                                DISPATCH
+                                            </Button>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
-                }
+                )}
             </div>
 
             {total > parcelsPerPage && totalPage > 1 && (
@@ -172,6 +166,11 @@ export default function Parcel() {
                         itemsPerPage={parcelsPerPage}
                     />
                 </div>
+            )}
+
+            {/* Modal */}
+            {isModalOpen && selectedParcelId && (
+                <ParcelDetailsModal parcelId={selectedParcelId} onClose={closeModal} />
             )}
         </div>
     );

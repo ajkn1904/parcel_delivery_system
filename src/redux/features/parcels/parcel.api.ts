@@ -20,9 +20,10 @@ export const parcelApi = baseApi.injectEndpoints({
         //transformResponse: (response) => response.data,
         }),
         getSingleParcel: builder.query({
-            query: ({id}) => ({
+            query: ({id, email}) => ({
                 url: `/parcel/${id}`,
                 method: "GET",
+                params: { email }, 
             }),
         providesTags: ["PARCEL"],
         transformResponse: (response) => response.data
