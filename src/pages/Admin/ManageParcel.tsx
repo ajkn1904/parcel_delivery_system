@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { SkeletonCard } from "@/utils/SkeletonCard";
 import GetPagination from "@/utils/GetPagination";
-import { useDeleteParcelMutation, useGetAllParcelsQuery} from "@/redux/features/parcels/parcel.api";
+import { useDeleteParcelMutation, useGetAllParcelsQuery } from "@/redux/features/parcels/parcel.api";
 import { toast } from "sonner";
-import BlockOrDeleteConfirmation from "@/components/BlockOrDeleteConfirmation";
+import BlockOrDeleteConfirmation from "@/components/BlockOrCancelOrDeleteConfirmation";
 import { Trash2 } from "lucide-react";
 import { ParcelModal } from "@/utils/ParcelModal";
 import ParcelSearchFilter from "@/utils/ParcelSearchFilter";
@@ -78,11 +78,11 @@ export default function ManageParcel() {
             <div className="flex justify-between lg:items-center my-8">
                 <h1 className="text-3xl lg:text-4xl font-semibold text-orange-500 dark:text-orange-400">PARCEL: {total}</h1>
 
-                <ParcelSearchFilter/>
+                <ParcelSearchFilter />
             </div>
 
             <div className="border border-muted rounded-md">
-                {parcelData < 1 ? 
+                {parcelData < 1 ?
                     <p className="font-bold text-xl text-center mx-auto">No Data Found</p>
                     :
                     <Table>
@@ -121,18 +121,18 @@ export default function ManageParcel() {
                                     <TableCell>{parcel.weight}</TableCell>
                                     <TableCell>{parcel.deliveryFee} tk</TableCell>
                                     <TableCell>{parcel.discountAmount}</TableCell>
-                                    <TableCell>{parcel.afterDiscountDeliveryFee ?parcel.afterDiscountDeliveryFee + 'tk': ''}</TableCell>
+                                    <TableCell>{parcel.afterDiscountDeliveryFee ? parcel.afterDiscountDeliveryFee + 'tk' : ''}</TableCell>
                                     <TableCell>{parcel.paymentMethod}</TableCell>
                                     <TableCell className="font-medium">{parcel.currentStatus}</TableCell>
                                     <TableCell>{new Date(parcel.createdAt).toLocaleString("PP")}</TableCell>
                                     <TableCell className="flex justify-between gap-2 border-l-2">
-                                        
+
                                         <Button variant={"outline"} size="sm" className="text-orange-500 hover:bg-orange-500 hover:text-white"
-                                        onClick={() => navigate(`/tracking/${parcel._id}`)}>
-                                                TRACK
+                                            onClick={() => navigate(`/tracking/${parcel._id}`)}>
+                                            TRACK
                                         </Button>
-                                        
-                                        
+
+
                                         <ParcelModal
                                             tId={parcel.trackingId}
                                             sender={parcel.sender?.email ?? "Unknown"}

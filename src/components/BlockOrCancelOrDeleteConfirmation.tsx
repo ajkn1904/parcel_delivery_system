@@ -4,12 +4,12 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 interface IProps {
   children: ReactNode;
   onConfirm: () => void;
-  actionType?: "block" | "unblock" | "delete" | "restore";
+  actionType?: "block" | "unblock" | "delete" | "restore" | "cancel";
   customTitle?: string;
   customDescription?: string;
 }
 
-export default function BlockOrDeleteConfirmation({
+export default function BlockOrCancelOrDeleteConfirmation({
   children,
   onConfirm,
   actionType,
@@ -27,7 +27,9 @@ export default function BlockOrDeleteConfirmation({
       ? "restore"
       : actionType === "block"
       ? "block"
-      : "unblock";
+      : actionType === "unblock"
+      ? "unblock"
+      : "cancel";
 
   return (
     <AlertDialog>
@@ -39,12 +41,17 @@ export default function BlockOrDeleteConfirmation({
           </AlertDialogTitle>
           <AlertDialogDescription>
             {customDescription ||
-              `This action will ${actionText} the selected user/data.`}
+              (
+                (actionText === "delete") || (actionText === "cancel") ?
+                `This action will ${actionText} the selected data. It cannot be undone`
+                :
+                `This action will ${actionText} the selected data.`
+              )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction className="text-white" onClick={handleConfirm}>
+          <AlertDialogCancel>Back</AlertDialogCancel>
+          <AlertDialogAction className={`${(actionText === "delete") || (actionText === "cancel") ? 'bg-red-400 hover:bg-red-500 dark:hover:bg-red-500': ' hover:bg-blue-600 dark:hover:bg-blue-700'} text-white`} onClick={handleConfirm}>
             {actionText.charAt(0).toUpperCase() + actionText.slice(1)}
           </AlertDialogAction>
         </AlertDialogFooter>
