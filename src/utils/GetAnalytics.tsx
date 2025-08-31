@@ -18,20 +18,23 @@ import {
   useGetParcelOverviewQuery,
   useGetParcelTrendsQuery,
   useGetStatusDistributionQuery,
+  useGetReceiverDeliveryPerformanceQuery,
+  useGetReceiverSuccessMetricsQuery,
 } from "@/redux/features/analytics/analytic.api";
 import { useTheme } from "@/hooks/useTheme";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
-  ArcElement,
-  PointElement,
-  LineElement,
   ChartDataLabels
 );
 
@@ -40,9 +43,15 @@ export default function GetAnalytics() {
   const { data: distributionData } = useGetStatusDistributionQuery({});
   const { data: trendsData } = useGetParcelTrendsQuery({});
   const { data } = useGetParcelOverviewQuery({});
+  const { data: receiverPerformance } = useGetReceiverDeliveryPerformanceQuery({});
+  const { data: receiverSuccess } = useGetReceiverSuccessMetricsQuery({});
   const { theme } = useTheme();
+  const { data: user } = useUserInfoQuery(undefined)
+  const userRole = user?.data?.role
+  console.log(userRole);
+
+
   const overviewData = data?.data;
-  //console.log(overviewData);
 
   const labelColor = theme === "dark" ? "#fff" : "#000";
   const gridColor =
@@ -50,7 +59,7 @@ export default function GetAnalytics() {
   const borderColor =
     theme === "dark" ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.3)";
 
-  // Monthly Shipments Line Chart
+  // ---------------- Monthly Shipments Line Chart ----------------
   const monthlyChartData = {
     labels: monthlyData?.data.map((item: any) => String(item._id)) || [],
     datasets: [
@@ -76,18 +85,12 @@ export default function GetAnalytics() {
       legend: { labels: { color: labelColor } },
     },
     scales: {
-      x: {
-        ticks: { color: labelColor },
-        grid: { color: gridColor, borderColor },
-      },
-      y: {
-        ticks: { color: labelColor },
-        grid: { color: gridColor, borderColor },
-      },
+      x: { ticks: { color: labelColor }, grid: { color: gridColor, borderColor } },
+      y: { ticks: { color: labelColor }, grid: { color: gridColor, borderColor } },
     },
   };
 
-  // Status Distribution Pie Chart
+  // ---------------- Status Distribution Pie Chart ----------------
   const statusColorMap: Record<string, string> = {
     Requested: "#FFCE56",
     "In Transit": "#9966FF",
@@ -118,7 +121,7 @@ export default function GetAnalytics() {
     },
   };
 
-  // Parcel Trends Bar Chart (Month-wise by Status)
+  // ---------------- Parcel Trends Bar Chart ----------------
   const uniqueMonths = trendsData
     ? Array.from(new Set(trendsData.data.map((item: any) => String(item.month))))
     : [];
@@ -140,7 +143,7 @@ export default function GetAnalytics() {
         const entry = trendsData?.data.find(
           (item: any) => String(item.month) === month && String(item.status) === status
         );
-        return entry ? Number(entry.count) : ''; // ✅ FIX: use number instead of ''
+        return entry ? Number(entry.count) : 0;
       }),
       backgroundColor: statusColors[(status as any)] || "#4BC0C0",
     })),
@@ -152,20 +155,81 @@ export default function GetAnalytics() {
       legend: { labels: { color: labelColor } },
     },
     scales: {
-      x: {
-        ticks: { color: labelColor },
-        grid: { color: gridColor, borderColor },
-      },
-      y: {
-        ticks: { color: labelColor },
-        grid: { color: gridColor, borderColor },
-      },
+      x: { ticks: { color: labelColor }, grid: { color: gridColor, borderColor } },
+      y: { ticks: { color: labelColor }, grid: { color: gridColor, borderColor } },
     },
   };
 
+
+  // ---------------- Receiver Success Metrics (Pie) ----------------
+  const successData = receiverSuccess?.data || {};
+  const successChartData = {
+    labels: ["Delivered", "Canceled", "Returned"],
+    datasets: [
+      {
+        label: "Receiver Success Metrics",
+        data: [
+          Number(successData.delivered) || 0,
+          Number(successData.canceled) || 0,
+          Number(successData.returned) || 0,
+        ],
+        backgroundColor: ["#36A2EB", "#FF6384", "#FFCE56"],
+      },
+    ],
+  };
+  const successChartOptions = {
+    plugins: {
+      datalabels: { color: labelColor, font: { weight: 700 } },
+      legend: { labels: { color: labelColor } },
+    },
+  };
+
+  // ---------------- Receiver Delivery Performance (Bar) ----------------
+const perfDataArray = receiverPerformance?.data?.[0]?.performance || [];
+
+const perfTrendChartData = {
+  labels: perfDataArray.map((item: any) => String(item.month)) || [],
+  datasets: [
+    {
+      label: "Total Delivered",
+      data: perfDataArray.map((item: any) => Number(item.onTime + item.late) || 0),
+      borderColor: "#4BC0C0",
+      backgroundColor: "rgba(75, 192, 192)",
+      fill: true,
+      tension: 0.3,
+    },
+    {
+      label: "On Time",
+      data: perfDataArray.map((item: any) => Number(item.onTime) || 0),
+      borderColor: "#36A2EB",
+      backgroundColor: "rgba(54, 162, 235)",
+      fill: true,
+      tension: 0.3,
+    },
+    {
+      label: "Late",
+      data: perfDataArray.map((item: any) => Number(item.late) || 0),
+      borderColor: "#FF6384",
+      backgroundColor: "rgba(255, 99, 132)",
+      fill: true,
+      tension: 0.3,
+    },
+  ],
+};
+
+const perfTrendChartOptions = {
+  plugins: {
+    datalabels: { color: labelColor, font: { weight: 700 } },
+    legend: { labels: { color: labelColor } },
+  },
+  scales: {
+    x: { ticks: { color: labelColor }, grid: { color: gridColor, borderColor } },
+    y: { ticks: { color: labelColor }, grid: { color: gridColor, borderColor } },
+  },
+};
+
   return (
     <div className="w-full max-w-5xl mx-auto space-y-10 px-5 mb-28">
-
       {/* Parcel Overview */}
       <div className="w-full">
         <h2 className="font-semibold text-lg mb-2">Parcel Overview</h2>
@@ -199,8 +263,10 @@ export default function GetAnalytics() {
         </div>
       </div>
 
-      {/* Charts */}
-      <div className="lg:flex justify-between items-start gap-8 my-16 lg:my-28">
+      {/* admin & sender */}
+      {
+        userRole === 'admin' || userRole === 'sender'  ?
+        <div className="lg:flex justify-between items-start gap-8 my-16 lg:my-28">
         <div className="w-full">
           <h2 className="text-lg font-semibold mb-3 dark:text-white">Status Distribution</h2>
           <Pie data={distributionChartData} options={distributionChartOptions} />
@@ -211,12 +277,35 @@ export default function GetAnalytics() {
           <Bar data={trendsChartData as any} options={trendsChartOptions} />
         </div>
       </div>
+      :
+      <></>
+      }
+
+
+      {/* Receiver Only */}
+      {
+        userRole === 'receiver' ?
+          <div className="lg:flex justify-between items-start gap-8 my-16">
+            <div className="w-full">
+              <h2 className="text-lg font-semibold mb-3 dark:text-white">Success Metrics</h2>
+              <Pie data={successChartData} options={successChartOptions} />
+            </div>
+
+            <div className="w-full lg:h-[400px] mt-16 lg:mt-0">
+              <h2 className="text-lg font-semibold mb-3 dark:text-white">Delivery Performance</h2>
+              <Bar data={perfTrendChartData} options={perfTrendChartOptions} />
+            </div>
+          </div>
+          :
+          <></>
+      }
 
       <div>
         <h2 className="text-lg font-semibold mb-3 dark:text-white">Monthly Shipments (Current Year)</h2>
         <Line data={monthlyChartData} options={monthlyChartOptions} />
       </div>
-    </div>
 
+
+    </div>
   );
 }

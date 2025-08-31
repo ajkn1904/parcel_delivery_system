@@ -30,6 +30,20 @@ export const analyticApi = baseApi.injectEndpoints({
             params
         }),
         }),
+        getReceiverDeliveryPerformance: builder.query({
+        query: (params) => ({
+            url: "/analytics/receiver/delivery-performance",
+            method: "GET",
+            params
+        }),
+        }),
+        getReceiverSuccessMetrics: builder.query({
+        query: (params) => ({
+            url: "/analytics/receiver/success-metrics",
+            method: "GET",
+            params
+        }),
+        }),
         
     }),
 });
@@ -39,5 +53,7 @@ export const {
     useGetStatusDistributionQuery,
     useGetMonthlyShipmentsQuery,
     useGetParcelTrendsQuery,
-    useGetParcelOverviewQuery
+    useGetParcelOverviewQuery,
+    useGetReceiverDeliveryPerformanceQuery,
+    useGetReceiverSuccessMetricsQuery
 } = analyticApi;

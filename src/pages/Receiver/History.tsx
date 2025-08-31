@@ -1,7 +1,9 @@
+import GetAnalytics from "@/utils/GetAnalytics";
+
 export default function History() {
   return (
     <div>
-      <h1>This is receiver History component</h1>
+      <GetAnalytics/>
     </div>
   );
 }
