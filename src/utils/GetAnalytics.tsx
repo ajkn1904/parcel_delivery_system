@@ -233,8 +233,7 @@ export default function GetAnalytics() {
     return <SkeletonCard />
   }
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-10 px-5 mb-28">
-      {/* Parcel Overview */}
+    <div className="">
       <div className="w-full">
         <h2 className="font-semibold text-lg mb-2 uppercase">Parcel Overview</h2>
         <div className="overflow-x-auto w-full">
@@ -267,7 +266,6 @@ export default function GetAnalytics() {
         </div>
       </div>
 
-      {/* admin & sender */}
       {
         userRole === 'admin' || userRole === 'sender' ?
           <div className="lg:flex justify-between items-start gap-8 my-16 lg:my-28">

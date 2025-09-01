@@ -36,9 +36,10 @@ export default function BlockOrCancelOrDeleteConfirmation({
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            {`Are you sure you want to ${actionText} this ${customTitle}`}
-          </AlertDialogTitle>
+        <AlertDialogTitle>
+          Are you sure you want to {actionText} this{" "}
+          <span className="font-bold">{customTitle}</span>
+        </AlertDialogTitle>
           <AlertDialogDescription>
             {customDescription ||
               (

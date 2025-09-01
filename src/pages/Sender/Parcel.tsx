@@ -207,7 +207,6 @@ export default function Parcel() {
                 </div>
             )}
 
-            {/* Modal */}
             {isModalOpen && selectedParcelId && (
                 <ParcelDetailsModal parcelId={selectedParcelId} onClose={closeModal} />
             )}

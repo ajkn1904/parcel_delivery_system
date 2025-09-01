@@ -10,10 +10,9 @@ export default function ParcelDetailsModal({ parcelId, onClose }: ParcelModalPro
     const { data } = useGetSingleParcelQuery({ id: parcelId })
     console.log(data);
     return (
-        <div className="fixed inset-0 bg-accent bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-md w-96">
-                <h2 className="text-xl font-semibold mb-4">Parcel Details</h2>
-                <p>Parcel ID: {data?.trackingId}</p>
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+            <div className="bg-white dark:bg-gray-900 p-6 rounded-md w-96">
+                <h2 className="text-xl font-semibold mb-4 uppercase">Parcel Details</h2>
                 <div className="space-y-2 text-sm">
                     <p><strong>Tracking ID:</strong> {data?.trackingId}</p>
                     <p><strong>Sender:</strong> {data?.sender?.email}</p>
@@ -29,7 +28,7 @@ export default function ParcelDetailsModal({ parcelId, onClose }: ParcelModalPro
                     <p><strong>Paid:</strong> {data?.isPaid ? "Yes" : "No"}</p>
                 </div>
 
-                <Button className="mt-4" onClick={onClose}>
+                <Button className="mt-4 uppercase text-white" onClick={onClose}>
                     Close
                 </Button>
             </div>

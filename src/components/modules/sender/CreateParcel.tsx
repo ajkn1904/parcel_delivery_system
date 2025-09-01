@@ -92,7 +92,7 @@ export default function CreateParcel() {
     return (
         <div className="w-[90%] max-w-3xl mx-auto mt-8 mb-20">
             <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 uppercase mb-10">Create Parcel</h1>
-            <div className=" p-5 border rounded-md">
+            <div className=" p-5 border rounded-md bg-gray-50 dark:bg-gray-900">
                 <Form {...form}>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
@@ -103,9 +103,9 @@ export default function CreateParcel() {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Receiver</FormLabel>
-                                    <FormControl className="w-full">
+                                    <FormControl className="w-full bg-white dark:bg-black">
                                         <Select value={field.value} onValueChange={field.onChange}>
-                                            <SelectTrigger className="w-full">
+                                            <SelectTrigger className="w-full bg-white dark:bg-black dark:hover:bg-black">
                                                 <SelectValue placeholder="" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -131,9 +131,9 @@ export default function CreateParcel() {
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
                                         <FormLabel>Parcel Type</FormLabel>
-                                        <FormControl>
+                                        <FormControl className="bg-white dark:bg-black">
                                             <Select value={field.value} onValueChange={field.onChange}>
-                                                <SelectTrigger className="w-full">
+                                                <SelectTrigger className="w-full bg-white dark:bg-black dark:hover:bg-black">
                                                     <SelectValue placeholder="Select parcel type" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -156,7 +156,7 @@ export default function CreateParcel() {
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
                                         <FormLabel>Weight (kg)</FormLabel>
-                                        <FormControl>
+                                        <FormControl className="bg-white dark:bg-black">
                                             <Input
                                                 type="number"
                                                 value={field.value || ""}
@@ -178,9 +178,9 @@ export default function CreateParcel() {
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
                                         <FormLabel>Delivery Method</FormLabel>
-                                        <FormControl>
+                                        <FormControl className="bg-white dark:bg-black">
                                             <Select value={field.value} onValueChange={field.onChange}>
-                                                <SelectTrigger className="w-full">
+                                                <SelectTrigger className="w-full bg-white dark:bg-black dark:hover:bg-black">
                                                     <SelectValue placeholder="Select delivery method" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -203,9 +203,9 @@ export default function CreateParcel() {
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
                                         <FormLabel>Payment Method</FormLabel>
-                                        <FormControl>
+                                        <FormControl className="bg-white dark:bg-black">
                                             <Select value={field.value} onValueChange={field.onChange}>
-                                                <SelectTrigger className="w-full">
+                                                <SelectTrigger className="w-full bg-white dark:bg-black dark:hover:bg-black">
                                                     <SelectValue placeholder="Select payment method" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -230,7 +230,7 @@ export default function CreateParcel() {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Pickup Address</FormLabel>
-                                    <FormControl>
+                                    <FormControl className="bg-white dark:bg-black">
                                         <Input {...field} placeholder="Pickup address" />
                                     </FormControl>
                                     <FormMessage />
@@ -245,7 +245,7 @@ export default function CreateParcel() {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Delivery Address</FormLabel>
-                                    <FormControl>
+                                    <FormControl className="bg-white dark:bg-black">
                                         <Input {...field} placeholder="Delivery address" />
                                     </FormControl>
                                     <FormMessage />
@@ -261,7 +261,7 @@ export default function CreateParcel() {
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
                                         <FormLabel>Delivery Distance (km)</FormLabel>
-                                        <FormControl>
+                                        <FormControl className="bg-white dark:bg-black">
                                             <Input
                                                 type="number"
                                                 value={field.value || ""}
@@ -279,9 +279,9 @@ export default function CreateParcel() {
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
                                         <FormLabel>Coupon</FormLabel>
-                                        <FormControl>
+                                        <FormControl className="bg-white dark:bg-black">
                                             <Select value={field.value} onValueChange={field.onChange}>
-                                                <SelectTrigger className="w-full">
+                                                <SelectTrigger className="w-full bg-white dark:bg-black dark:hover:bg-black">
                                                     <SelectValue placeholder="Select coupon (optional)" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -313,7 +313,7 @@ export default function CreateParcel() {
                                         <FormLabel>Estimated Delivery Date</FormLabel>
                                         <Popover>
                                             <PopoverTrigger asChild>
-                                                <FormControl>
+                                                <FormControl className="bg-white dark:bg-black">
                                                     <Button
                                                         variant={"outline"}
                                                         className={cn(
@@ -347,7 +347,7 @@ export default function CreateParcel() {
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
                                         <FormLabel>Contact Phone</FormLabel>
-                                        <FormControl>
+                                        <FormControl className="bg-white dark:bg-black">
                                             <Phone {...field} />
                                         </FormControl>
                                         <FormMessage />
@@ -356,7 +356,7 @@ export default function CreateParcel() {
                             />
                         </div>
 
-                        {/* Submit Buttons */}
+                    
                         <div className="flex justify-end gap-2 mt-8">
                             <Button variant={"outline"} onClick={() => navigate(-1)}>
                                 <ArrowLeft className="w-4 h-4" /> BACK

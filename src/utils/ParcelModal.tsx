@@ -20,7 +20,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export function ParcelModal({ parcelData, activeRow, hoveredRow }: { parcelData: any, activeRow: any, hoveredRow: any }) {
-  console.log(parcelData);
+  //console.log(parcelData);
 
   const [open, setOpen] = useState(false);
   const [parcelStatusUpdate] = useUpdateParcelByAdminMutation();
@@ -36,10 +36,10 @@ export function ParcelModal({ parcelData, activeRow, hoveredRow }: { parcelData:
   // 🔹 Reset form values whenever modal opens with fresh data
   useEffect(() => {
     if (open && parcelData) {
-      const lastLog = parcelData.trackingEvents?.[parcelData.trackingEvents.length - 1] || {};
+      const lastLog = parcelData?.trackingEvents?.[parcelData?.trackingEvents.length - 1] || {};
 
       form.reset({
-        currentStatus: parcelData.currentStatus || "",
+        currentStatus: parcelData?.currentStatus || "",
         note: lastLog.note || "",
         location: lastLog.location || "",
       });
@@ -69,7 +69,7 @@ export function ParcelModal({ parcelData, activeRow, hoveredRow }: { parcelData:
         location: data?.location,
       };
 
-      await parcelStatusUpdate({ id: parcelData._id, ...payload }).unwrap();
+      await parcelStatusUpdate({ id: parcelData?._id, ...payload }).unwrap();
       //console.log(res);
 
       toast.success("Parcel status updated!", { id: toastId });
@@ -91,7 +91,7 @@ export function ParcelModal({ parcelData, activeRow, hoveredRow }: { parcelData:
         <Button
           variant={"outline"}
           size="sm"
-          className={`${activeRow === parcelData._id || hoveredRow === parcelData._id ? "bg-blue-400 text-white" : "text-blue-400"} hover:bg-blue-600 dark:hover:bg-blue-700 hover:text-white`}
+          className={`${activeRow === parcelData?._id || hoveredRow === parcelData?._id ? "bg-blue-400 text-white" : "text-blue-400"} hover:bg-blue-600 dark:hover:bg-blue-700 hover:text-white uppercase`}
         >
           <Edit2 />
         </Button>
@@ -100,30 +100,30 @@ export function ParcelModal({ parcelData, activeRow, hoveredRow }: { parcelData:
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            <div className="text-center mb-4 text-2xl">Update Parcel Status</div>
+            <div className="text-center mb-4 text-2xl uppercase">Update Parcel Status</div>
             <div className="text-start my-2">
-              Tracking ID: <span className="font-light"> {parcelData.trackingId}</span>
+              Tracking ID: <span className="font-light"> {parcelData?.trackingId}</span>
             </div>
             <p className="text-start my-2">
-              Estimate Delivery: <span className="font-light">{new Date(parcelData.estimatedDeliveryDate).toDateString()}</span>
+              Estimate Delivery: <span className="font-light">{new Date(parcelData?.estimatedDeliveryDate).toDateString()}</span>
             </p>
             <p className="text-start my-2">
               Sender:{" "}
-              <a href={`mailto:${parcelData.sender.email}`} className="font-light text-blue-400">
-                {parcelData.sender.email}
+              <a href={`mailto:${parcelData?.sender?.email}`} className="font-light text-primary underline">
+                {parcelData?.sender?.email ?? "Unknown"}
               </a>
             </p>
             <p className="text-start my-2">
               Receiver:{" "}
-              <a href={`mailto:${parcelData?.receiver?.email}`} className="font-light text-blue-400">
-                {parcelData?.receiver?.email}
+              <a href={`mailto:${parcelData?.receiver?.email}`} className="font-light text-primary underline">
+                {parcelData?.receiver?.email ?? "Unknown"}
               </a>
             </p>
             <p className="text-start my-2">
-              From: <span className="font-light">{parcelData.pickupAddress}</span>
+              From: <span className="font-light">{parcelData?.pickupAddress}</span>
             </p>
             <p className="text-start my-2">
-              To: <span className="font-light">{parcelData.deliveryAddress}</span>
+              To: <span className="font-light">{parcelData?.deliveryAddress}</span>
             </p>
 
           </DialogTitle>
@@ -134,7 +134,6 @@ export function ParcelModal({ parcelData, activeRow, hoveredRow }: { parcelData:
         <Form {...form}>
           <form id="status-log" className="  mt-2 w-full" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex justify-between gap-5 w-full mb-1">
-              {/* Current Status Dropdown */}
               <FormField
                 control={form.control}
                 name="currentStatus"
@@ -143,7 +142,7 @@ export function ParcelModal({ parcelData, activeRow, hoveredRow }: { parcelData:
                     <FormLabel>Current Status</FormLabel>
                     <FormControl>
                       <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger>
+                        <SelectTrigger className="bg-white dark:bg-black dark:hover:bg-black">
                           <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                         <SelectContent>
@@ -160,14 +159,13 @@ export function ParcelModal({ parcelData, activeRow, hoveredRow }: { parcelData:
                 )}
               />
 
-              {/* Location Input */}
               <FormField
                 control={form.control}
                 name="location"
                 render={({ field }) => (
                   <FormItem className="grow-1">
                     <FormLabel>Current Location</FormLabel>
-                    <FormControl>
+                    <FormControl className="bg-white dark:bg-black dark:hover:bg-black">
                       <Input {...field} />
                     </FormControl>
                     <FormMessage />
@@ -177,14 +175,13 @@ export function ParcelModal({ parcelData, activeRow, hoveredRow }: { parcelData:
             </div>
 
 
-            {/* Note Input */}
             <FormField
               control={form.control}
               name="note"
               render={({ field }) => (
                 <FormItem className="flex justify-between gap-2 mt-2">
                   <FormLabel>Note</FormLabel>
-                  <FormControl>
+                  <FormControl className="bg-white dark:bg-black dark:hover:bg-black">
                     <Input {...field} />
                   </FormControl>
                   <FormMessage />
@@ -196,15 +193,15 @@ export function ParcelModal({ parcelData, activeRow, hoveredRow }: { parcelData:
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline" onClick={() => form.reset()}>Cancel</Button>
+            <Button variant="outline" className="uppercase" onClick={() => form.reset()}>Cancel</Button>
           </DialogClose>
           <Button
             type="submit"
             form="status-log"
-            className="text-white"
+            className="text-white uppercase"
             disabled={!formState.isDirty}
           >
-            Save changes
+            Save
           </Button>
         </DialogFooter>
       </DialogContent>

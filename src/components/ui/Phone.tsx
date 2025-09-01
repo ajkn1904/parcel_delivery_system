@@ -12,7 +12,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, DefaultInputComponentProps
         ref={ref}
         data-slot="phone-input"
         className={cn(
-          "-ms-px rounded-s-none shadow-none focus-visible:z-10",
+          "-ms-px rounded-s-none shadow-none focus-visible:z-10 bg-white dark:bg-black",
           className
         )}
         {...props}

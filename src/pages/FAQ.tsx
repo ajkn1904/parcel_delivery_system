@@ -1,5 +1,3 @@
-import { Badge } from "@/components/ui/badge";
-
 export interface FaqItem {
   question: string;
   answer: string;
@@ -14,38 +12,41 @@ export interface Faq5Props {
 
 const defaultFaqs: FaqItem[] = [
   {
-    question: "What is a FAQ and why is it important?",
+    question: "How can I track my parcel?",
     answer:
-      "FAQ stands for Frequently Asked Questions. It is a list that provides answers to common questions people may have about a specific product, service, or topic.",
+      "Once your parcel is shipped, you will receive a tracking number. Enter this number in our tracking system to see the real-time status and location of your delivery.",
   },
   {
-    question: "Why should I use a FAQ on my website or app?",
+    question: "What are your delivery timeframes?",
     answer:
-      "Utilizing a FAQ section on your website or app is a practical way to offer instant assistance to your users or customers. Instead of waiting for customer support responses, they can find quick answers to commonly asked questions. ",
+      "Delivery times depend on the destination and service type. Standard deliveries typically take 2-5 business days, while express options are faster. Exact estimates are provided at checkout.",
   },
   {
-    question: "How do I effectively create a FAQ section?",
+    question: "What should I do if my parcel is delayed?",
     answer:
-      "Creating a FAQ section starts with gathering the most frequent questions you receive from your users or customers. Once you have a list, you need to write clear, detailed, and helpful answers to each question.",
+      "If your delivery is delayed, please check your tracking information first. For further assistance, contact our customer support team, who will help resolve any issues promptly.",
   },
   {
-    question: "What are the benefits of having a well-maintained FAQ section?",
+    question: "Do you offer international shipping?",
     answer:
-      "There are numerous advantages to maintaining a robust FAQ section. Firstly, it provides immediate answers to common queries, which improves the user experience.",
+      "Yes, we provide international delivery services to many countries. Shipping times and costs vary based on location and package size. You can get an estimate during checkout.",
+  },
+  {
+    question: "Can I change the delivery address after shipping?",
+    answer:
+      "If your parcel hasn’t been dispatched yet, you can update the delivery address via your account. Once it’s in transit, contact customer support for possible solutions.",
   },
 ];
 
 export default function FAQ({
-  badge = "FAQ",
-  heading = "Common Questions & Answers",
-  description = "Find out all the essential details about our platform and how it can serve your needs.",
+  heading = "Frequently Asked Questions",
+  description = "Find answers to the most common questions about our parcel delivery services.",
   faqs = defaultFaqs,
 }: Faq5Props) {
   return (
-    <section className="container py-32 scale-x-[0.90]">
+    <section className="container py-24 scale-x-[0.90]">
       <div className="container">
         <div className="text-center">
-          <Badge className="text-xs font-medium dark:text-foreground">{badge}</Badge>
           <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-10 uppercase">{heading}</h1>
           <p className="mt-6 font-medium text-muted-foreground">
             {description}
@@ -70,4 +71,3 @@ export default function FAQ({
     </section>
   );
 };
-

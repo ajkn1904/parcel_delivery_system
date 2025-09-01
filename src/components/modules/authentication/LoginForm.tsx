@@ -76,7 +76,7 @@ export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivE
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-semibold text-orange-500 dark:text-orange-400 mb-10 uppercase">
+        <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-10 uppercase">
           Login to your account
         </h1>
         <p className="text-balance text-sm text-muted-foreground">
@@ -117,7 +117,7 @@ export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivE
               )}
             />
 
-            <Button type="submit" className="w-full dark:text-foreground">
+            <Button type="submit" className="w-full dark:text-foreground uppercase">
               Login
             </Button>
           </form>
@@ -133,7 +133,7 @@ export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivE
           onClick={() => window.open(`${config.baseUrl}/auth/google`)}
           type="button"
           variant="outline"
-          className="w-full cursor-pointer bg-gray-50 dark:bg-gray-900"
+          className="w-full cursor-pointer bg-gray-50 dark:bg-gray-900 uppercase"
         >
           Login with Google
         </Button>

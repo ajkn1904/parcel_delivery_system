@@ -22,7 +22,7 @@ export default function Tracking() {
   if (isLoading) return <SkeletonCard />;
   if (!data || data.length === 0) return <div>
     <p>No Tracking History Found!</p>;
-    <Button variant="default" className="flex items-center gap-2 dark:text-foreground hover:bg-blue-600 dark:hover:bg-blue-700" onClick={() => navigate(-1)}>
+    <Button variant="default" className="flex items-center gap-2 dark:text-foreground hover:bg-blue-600 dark:hover:bg-blue-700 uppercase" onClick={() => navigate(-1)}>
       <ArrowLeft className="w-4 h-4" />
       Back
     </Button>
@@ -32,14 +32,14 @@ export default function Tracking() {
     step: index + 1,
     title: event.status,
     description: event.note,
-    time: new Date(event.createdAt).toLocaleString(),
+    time: new Date(event.createdAt).toLocaleTimeString() + ", " + new Date(event.createdAt).toDateString(),
     updatedByRole: event.updatedByRole ?? '',
     location: event.location ?? "",
   }));
 
   return (
     <div className="w-[95%] max-w-2xl mx-auto my-10 space-y-8">
-      <h1 className="text-2xl lg:text-4xl font-semibold text-center">
+      <h1 className="text-2xl lg:text-4xl font-semibold text-center uppercase">
         Tracking History for <span className="text-orange-500 dark:text-orange-400">{trackingId}</span>
       </h1>
 
@@ -51,9 +51,9 @@ export default function Tracking() {
               <div className="mt-0.5 space-y-0.5 px-2 text-left">
                 <StepperTitle>{title}</StepperTitle>
                 {description && <StepperDescription>{description}</StepperDescription>}
-                <StepperDescription>{time}</StepperDescription>
                 {location && <StepperDescription>{location}</StepperDescription>}
                 {updatedByRole && <StepperDescription> <span className="font-bold">Updated By: </span>{updatedByRole}</StepperDescription>}
+                <StepperDescription className="text-xs">{time}</StepperDescription>
 
               </div>
             </div>
@@ -66,7 +66,7 @@ export default function Tracking() {
       </Stepper>
 
       <div className="flex justify-end">
-        <Button variant="default" className="flex items-center gap-2 dark:text-foreground hover:bg-blue-600 dark:hover:bg-blue-700" onClick={() => navigate(-1)}>
+        <Button variant="default" className="flex items-center gap-2 dark:text-foreground hover:bg-blue-600 dark:hover:bg-blue-700 uppercase" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4" />
           Back
         </Button>

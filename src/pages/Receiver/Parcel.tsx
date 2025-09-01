@@ -7,7 +7,7 @@ import GetPagination from "@/utils/GetPagination";
 import { useGetAllParcelsQuery, useUpdateParcelMutation } from "@/redux/features/parcels/parcel.api";
 import { toast } from "sonner";
 import ParcelSearchFilter from "@/utils/ParcelSearchFilter";
-import { Link, useNavigate, useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import ParcelDetailsModal from "@/utils/ParcelDetailsModal";
 
 export default function Parcel() {
@@ -68,12 +68,12 @@ export default function Parcel() {
     <div className="w-full max-w-6xl mx-auto px-5">
       <div className="flex justify-between lg:items-center my-8">
         <div>
-          <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-16">
+          <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-24">
             PARCEL: {total}
           </h1>
-          <Button className="my-8 text-white">
+          {/* <Button className="my-8 text-white">
             <Link to={"/parcel/create"}>CREATE PARCEL</Link>
-          </Button>
+          </Button> */}
         </div>
         <ParcelSearchFilter />
       </div>
@@ -120,7 +120,6 @@ export default function Parcel() {
                   </TableCell>
                   <TableCell>{new Date(parcel.updatedAt).toDateString()}</TableCell>
                   <TableCell className="flex justify-between gap-2 border-l-2">
-                    {/* TRACK BUTTON */}
                     <Button
                       variant={"outline"}
                       size="sm"
@@ -135,7 +134,6 @@ export default function Parcel() {
                       VIEW
                     </Button>
 
-                    {/* CONDITIONAL STATUS BUTTONS */}
                     {
                       parcel.currentStatus === "Requested" || parcel.currentStatus === "Approved" ? (
                         <Button
@@ -206,7 +204,6 @@ export default function Parcel() {
         </div>
       )}
 
-      {/* Modal */}
       {isModalOpen && selectedParcelId && (
         <ParcelDetailsModal parcelId={selectedParcelId} onClose={closeModal} />
       )}

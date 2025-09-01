@@ -89,12 +89,11 @@ export default function ManageUser() {
     }
 
     return (
-        <div className="w-full max-w-7xl mx-auto px-5">
+        <div className="w-full max-w-6xl mx-auto px-5">
             <div className="flex justify-between my-8">
-                <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 uppercase">USER : {data ? total : 0}</h1>
+                <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 uppercase mb-24">USER : {data ? total : 0}</h1>
 
 
-                {/* ⬇️ Role filter */}
                 <div className="w-48 flex justify-between items-center align-middle gap-2">
                     <Label className="font-semibold uppercase">Role</Label>
                     <Select onValueChange={(value) => setSelectedRole(value)} value={selectedRole || "all"}>

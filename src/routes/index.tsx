@@ -56,6 +56,10 @@ export const router = createBrowserRouter([
                 Component: Unauthorized,
                 path: "/unauthorized"
             },
+            {
+                Component: Unauthorized,
+                path: "*"
+            },
             
             {
                 Component: withAuth(Tracking),

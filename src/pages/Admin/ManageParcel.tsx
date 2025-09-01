@@ -79,7 +79,7 @@ export default function ManageParcel() {
     return (
         <div className="w-full max-w-6xl mx-auto px-5">
             <div className="flex justify-between lg:items-center my-8">
-                <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-16">PARCEL: {total}</h1>
+                <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-16 lg:mb-24">PARCEL: {total}</h1>
 
                 <ParcelSearchFilter />
             </div>

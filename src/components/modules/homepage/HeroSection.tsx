@@ -28,8 +28,8 @@ const DottedDiv = ({
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden lg:max-h-[85vh] bg-background mx-auto pt-5">
-      <div className="px-0! container relative flex flex-col items-center lg:scale-y-[0.8] xl:scale-[0.8] origin-top">
+    <section className="relative overflow-hidden bg-background mx-auto pt-5 max-w-7xl">
+      <div className="px-0 relative flex flex-col items-center lg:scale-y-[0.8] xl:scale-y-[0.9] origin-top">
         <DottedDiv>
           <div className="grid lg:grid-cols-2">
             {/* Left Content */}
@@ -41,17 +41,17 @@ export default function HeroSection() {
               >
                 <Link to="/about" className="flex items-center">
                   <span className="text-muted-foreground text-sm font-medium tracking-tight">
-                    About Us
+                    ABOUT US
                   </span>
                   <ChevronRight className="size-4!" />
                 </Link>
               </Badge>
 
-              <h1 className="text-5xl font-semibold tracking-tighter md:text-7xl">
+              <h1 className="text-5xl font-semibold tracking-tighter md:text-7xl uppercase">
                 Reach the world with
                 <br />
                 <span className="text-primary">PARCEL</span>
-                GO.
+                <span className="text-orange-400">GO.</span>
               </h1>
               <p className="text-muted-foreground tracking-tight md:text-xl">
                 Fast | Reliable | Global
@@ -64,7 +64,7 @@ export default function HeroSection() {
                   className="text-md bg-primary text-primary-foreground dark:text-foreground h-12 w-fit rounded-full px-6"
                 >
                   <Link to="/register" className="flex items-center gap-2">
-                    Register <ArrowRight />
+                    REGISTER <ArrowRight />
                   </Link>
                 </Button>
               </div>
@@ -98,7 +98,7 @@ export default function HeroSection() {
                       Discover our worldwide parcel delivery service.
                     </p>
                   </div>
-                  <Button asChild size={"lg"} className="text-background dark:text-foreground py-10">
+                  <Button asChild size={"lg"} className="text-background dark:text-foreground py-10 uppercase">
                     <Link
                       to="/contact"
                       className="group mb-6 flex flex-col items-center"

@@ -83,7 +83,7 @@ export function RegisterForm({
     const toastId = toast.loading("Creating Account...");
     try {
       const result = await register(userInfo).unwrap();
-      console.log(result);
+      //console.log(result);
       if (result.success) {
         form.reset();
       }
@@ -117,7 +117,7 @@ export function RegisterForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-semibold text-orange-500 dark:text-orange-400 mb-10 uppercase">Register your account</h1>
+        <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-10 uppercase">Register your account</h1>
         <p className="text-sm text-muted-foreground">
           Enter your details to create an account
         </p>
@@ -248,7 +248,7 @@ export function RegisterForm({
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full dark:text-foreground">
+            <Button type="submit" className="w-full dark:text-foreground uppercase">
               Submit
             </Button>
           </form>
@@ -264,7 +264,7 @@ export function RegisterForm({
           onClick={() => window.open(`${config.baseUrl}/auth/google`)}
           type="button"
           variant="outline"
-          className="w-full cursor-pointer bg-gray-50 dark:bg-gray-900"
+          className="w-full cursor-pointer bg-gray-50 dark:bg-gray-900 uppercase"
         >
           Continue with Google
         </Button>

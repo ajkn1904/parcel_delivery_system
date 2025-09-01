@@ -61,10 +61,9 @@ export default function Contact({
   };
 
   return (
-    <section className="py-32">
+    <section className="py-24">
       <div className="container">
-        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-10 lg:flex-row lg:gap-20">
-          {/* Left Info */}
+        <div className="mx-auto flex max-w-6xl flex-col justify-between gap-10 lg:flex-row lg:gap-20">
           <div className="mx-auto flex max-w-sm flex-col justify-between gap-10">
             <div className="text-center lg:text-left">
               <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-10 uppercase">
@@ -97,7 +96,6 @@ export default function Contact({
             </div>
           </div>
 
-          {/* Contact Form */}
           <form
             onSubmit={handleSubmit}
             className="mx-auto flex w-96 max-w-3xl flex-col gap-6 rounded-lg p-10 border border-muted bg-gray-50 dark:bg-gray-900"
@@ -105,6 +103,7 @@ export default function Contact({
             <div className="grid w-full items-center gap-1.5">
               <Label htmlFor="name">Name</Label>
               <Input
+                className="bg-white dark:bg-black dark:hover:bg-black"
                 type="text"
                 id="name"
                 value={formName}
@@ -115,17 +114,19 @@ export default function Contact({
             <div className="grid w-full items-center gap-1.5">
               <Label htmlFor="email">Email</Label>
               <Input
+                className="bg-white dark:bg-black dark:hover:bg-black"
                 type="email"
                 id="email"
                 value={formEmail}
                 onChange={(e) => setFormEmail(e.target.value)}
-                
+
               />
               {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
             </div>
             <div className="grid w-full items-center gap-1.5">
               <Label htmlFor="subject">Subject</Label>
               <Input
+                className="bg-white dark:bg-black dark:hover:bg-black"
                 type="text"
                 id="subject"
                 value={formSubject}
@@ -136,6 +137,7 @@ export default function Contact({
             <div className="grid w-full gap-1.5">
               <Label htmlFor="message">Message</Label>
               <Textarea
+                className="bg-white dark:bg-black dark:hover:bg-black"
                 id="message"
                 value={formMessage}
                 onChange={(e) => setFormMessage(e.target.value)}
@@ -145,7 +147,7 @@ export default function Contact({
             <Button
               type="submit"
               disabled={loading}
-              className="w-full text-background dark:text-foreground"
+              className="w-full text-background dark:text-foreground uppercase"
             >
               {loading ? "Sending..." : "Send Message"}
             </Button>

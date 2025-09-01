@@ -23,7 +23,7 @@ const FormSchema = z.object({
 
 
 export function CouponModal({ id, code, discountPercentage, expiryDate, activeRow, hoveredRow }: { id: string; code: string; discountPercentage: number; expiryDate: string, activeRow: any, hoveredRow: any }) {
-    console.log(id, code, expiryDate, discountPercentage);
+    //console.log(id, code, expiryDate, discountPercentage);
 
     const [open, setOpen] = useState(false);
     const [couponUpdate] = useUpdateCouponMutation();
@@ -75,10 +75,10 @@ export function CouponModal({ id, code, discountPercentage, expiryDate, activeRo
 
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>
+                    <DialogTitle className="uppercase">
                         Update Coupon
                         <div className="text-start my-2">
-                            Coupon Code: <span className="font-light"> {code}</span>
+                            Code: <span className="font-light"> {code}</span>
                         </div>
                     </DialogTitle>
                 </DialogHeader>
@@ -94,7 +94,7 @@ export function CouponModal({ id, code, discountPercentage, expiryDate, activeRo
                             render={({ field }) => (
                                 <FormItem className="grow-1">
                                     <FormLabel>Code</FormLabel>
-                                    <FormControl>
+                                    <FormControl className="bg-white dark:bg-black dark:hover:bg-black">
                                         <Input {...field} />
                                     </FormControl>
                                     <FormMessage />
@@ -107,7 +107,7 @@ export function CouponModal({ id, code, discountPercentage, expiryDate, activeRo
                             render={({ field }) => (
                                 <FormItem className="grow-1">
                                     <FormLabel>Discount Percentage</FormLabel>
-                                    <FormControl>
+                                    <FormControl className="bg-white dark:bg-black dark:hover:bg-black">
                                         <Input type="number" {...field} />
                                     </FormControl>
                                     <FormMessage />
@@ -123,7 +123,7 @@ export function CouponModal({ id, code, discountPercentage, expiryDate, activeRo
                                     <FormLabel>ExpiryDate Date</FormLabel>
                                     <Popover>
                                         <PopoverTrigger asChild>
-                                            <FormControl>
+                                            <FormControl className="bg-white dark:bg-black dark:hover:bg-black">
                                                 <Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
                                                     {field.value ?
                                                         (format(field.value, "PPP"))
@@ -147,10 +147,10 @@ export function CouponModal({ id, code, discountPercentage, expiryDate, activeRo
 
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button variant="outline" onClick={() => form.reset()}>Cancel</Button>
+                        <Button variant="outline" className="uppercase" onClick={() => form.reset()}>Cancel</Button>
                     </DialogClose>
-                    <Button type="submit" form="status-log" className="text-white" disabled={formState.isDirty}>
-                        Save changes
+                    <Button type="submit" form="status-log" className="text-white uppercase" disabled={formState.isDirty}>
+                        Save
                     </Button>
                 </DialogFooter>
             </DialogContent>

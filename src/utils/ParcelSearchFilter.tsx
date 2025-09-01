@@ -91,7 +91,7 @@ export default function ParcelSearchFilter() {
             // placeholder="Enter tracking ID"
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-8 w-[230px] mt-1.5"
+            className="pl-8 w-[230px] mt-1.5 bg-white dark:bg-black dark:hover:bg-black"
           />
         </div>
 
@@ -102,7 +102,7 @@ export default function ParcelSearchFilter() {
             onValueChange={handleStatusChange}
             value={selectedStatus}
           >
-            <SelectTrigger className="w-[120px] my-1 lg:my-6.5">
+            <SelectTrigger className="w-[120px] my-1 lg:my-6.5 bg-white dark:bg-black dark:hover:bg-black">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -123,7 +123,7 @@ export default function ParcelSearchFilter() {
             onValueChange={handleTypeChange}
             value={selectedType}
           >
-            <SelectTrigger className="w-[120px] my-1 lg:my-6.5">
+            <SelectTrigger className="w-[120px] my-1 lg:my-6.5 bg-white dark:bg-black dark:hover:bg-black">
               <SelectValue placeholder="Select Type" />
             </SelectTrigger>
             <SelectContent>
@@ -141,7 +141,7 @@ export default function ParcelSearchFilter() {
         <div className="flex gap-1 justify-between">
           <Label className="font-semibold">Sort</Label>
           <Select onValueChange={handleSortChange} value={selectedSort}>
-            <SelectTrigger className="w-[120px] my-1 lg:my-6.5">
+            <SelectTrigger className="w-[120px] my-1 lg:my-6.5 bg-white dark:bg-black dark:hover:bg-black">
               <SelectValue placeholder="Select Sort" />
             </SelectTrigger>
             <SelectContent>
