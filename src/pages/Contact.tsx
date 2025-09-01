@@ -1,7 +1,12 @@
+"use client";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { Globe, Mail, Phone } from "lucide-react";
 
 interface Contact2Props {
   title?: string;
@@ -14,74 +19,139 @@ interface Contact2Props {
 export default function Contact({
   title = "Contact Us",
   description = "We are available for questions, feedback, or collaboration opportunities. Let us know how we can help!",
-  phone = "(123) 34567890",
-  email = "email@example.com",
-  web = { label: "shadcnblocks.com", url: "https://shadcnblocks.com" },
+  phone = "(+123) 34567890",
+  email = "parcelgo@email.com",
+  web = { label: "parcelgo.com", url: "/" },
 }: Contact2Props) {
+  const [loading, setLoading] = useState(false);
+
+  const [formName, setFormName] = useState("Example");
+  const [formEmail, setFormEmail] = useState("");
+  const [formSubject, setFormSubject] = useState("Parcel request");
+  const [formMessage, setFormMessage] = useState(
+    "How to create a parcel request?"
+  );
+
+  const [error, setError] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!formEmail.trim()) {
+      setError("Email is required");
+      return;
+    }
+
+    const toastId = toast.loading("Sending message...!");
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+      toast.success("Message Sent. We’ll get back to you as soon as possible.", {
+        id: toastId,
+      });
+
+      // ✅ After submit, clear values → placeholders will show
+      setFormName("");
+      setFormEmail("");
+      setFormSubject("");
+      setFormMessage("");
+    }, 2000);
+  };
+
   return (
     <section className="py-32">
       <div className="container">
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-10 lg:flex-row lg:gap-20">
+          {/* Left Info */}
           <div className="mx-auto flex max-w-sm flex-col justify-between gap-10">
             <div className="text-center lg:text-left">
-              <h1 className="mb-2 text-5xl font-semibold lg:mb-1 lg:text-6xl">
+              <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-10 uppercase">
                 {title}
               </h1>
               <p className="text-muted-foreground">{description}</p>
             </div>
             <div className="mx-auto w-fit lg:mx-0">
               <h3 className="mb-6 text-center text-2xl font-semibold lg:text-left">
-                Contact Details
+                Reach Us
               </h3>
               <ul className="ml-4 list-disc">
-                <li>
-                  <span className="font-bold">Phone: </span>
-                  {phone}
+                <li className="flex items-center gap-3">
+                  <Phone className="text-orange-500" />
+                  <span>{phone}</span>
                 </li>
-                <li>
-                  <span className="font-bold">Email: </span>
-                  <a href={`mailto:${email}`} className="underline">
+                <li className="flex items-center gap-3">
+                  <Mail className="text-orange-500" />
+                  <a href={`mailto:${email}`} className="underline text-blue-500">
                     {email}
                   </a>
                 </li>
-                <li>
-                  <span className="font-bold">Web: </span>
-                  <a href={web.url} target="_blank" className="underline">
+                <li className="flex items-center gap-3">
+                  <Globe className="text-orange-500" />
+                  <a href={web.url} target="_self" className="underline text-blue-500">
                     {web.label}
                   </a>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="mx-auto flex max-w-3xl flex-col gap-6 rounded-lg border p-10">
-            <div className="flex gap-4">
-              <div className="grid w-full items-center gap-1.5">
-                <Label htmlFor="firstname">First Name</Label>
-                <Input type="text" id="firstname" placeholder="First Name" />
-              </div>
-              <div className="grid w-full items-center gap-1.5">
-                <Label htmlFor="lastname">Last Name</Label>
-                <Input type="text" id="lastname" placeholder="Last Name" />
-              </div>
+
+          {/* Contact Form */}
+          <form
+            onSubmit={handleSubmit}
+            className="mx-auto flex w-96 max-w-3xl flex-col gap-6 rounded-lg p-10 border border-muted bg-gray-50 dark:bg-gray-900"
+          >
+            <div className="grid w-full items-center gap-1.5">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                type="text"
+                id="name"
+                value={formName}
+                onChange={(e) => setFormName(e.target.value)}
+                placeholder="Enter your name"
+              />
             </div>
             <div className="grid w-full items-center gap-1.5">
               <Label htmlFor="email">Email</Label>
-              <Input type="email" id="email" placeholder="Email" />
+              <Input
+                type="email"
+                id="email"
+                value={formEmail}
+                onChange={(e) => setFormEmail(e.target.value)}
+                
+              />
+              {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
             </div>
             <div className="grid w-full items-center gap-1.5">
               <Label htmlFor="subject">Subject</Label>
-              <Input type="text" id="subject" placeholder="Subject" />
+              <Input
+                type="text"
+                id="subject"
+                value={formSubject}
+                onChange={(e) => setFormSubject(e.target.value)}
+                placeholder="Enter subject"
+              />
             </div>
             <div className="grid w-full gap-1.5">
               <Label htmlFor="message">Message</Label>
-              <Textarea placeholder="Type your message here." id="message" />
+              <Textarea
+                id="message"
+                value={formMessage}
+                onChange={(e) => setFormMessage(e.target.value)}
+                placeholder="Enter your message"
+              />
             </div>
-            <Button className="w-full text-background dark:text-foreground">Send Message</Button>
-          </div>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full text-background dark:text-foreground"
+            >
+              {loading ? "Sending..." : "Send Message"}
+            </Button>
+          </form>
         </div>
       </div>
     </section>
   );
-};
-
-
+}
