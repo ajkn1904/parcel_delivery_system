@@ -24,6 +24,7 @@ import {
 import { useTheme } from "@/hooks/useTheme";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { SkeletonCard } from "./SkeletonCard";
 
 ChartJS.register(
   CategoryScale,
@@ -39,16 +40,16 @@ ChartJS.register(
 );
 
 export default function GetAnalytics() {
-  const { data: monthlyData } = useGetMonthlyShipmentsQuery({});
-  const { data: distributionData } = useGetStatusDistributionQuery({});
-  const { data: trendsData } = useGetParcelTrendsQuery({});
-  const { data } = useGetParcelOverviewQuery({});
-  const { data: receiverPerformance } = useGetReceiverDeliveryPerformanceQuery({});
-  const { data: receiverSuccess } = useGetReceiverSuccessMetricsQuery({});
+  const { data: monthlyData, isLoading } = useGetMonthlyShipmentsQuery({});
+  const { data: distributionData, isLoading: distributionLoading } = useGetStatusDistributionQuery({});
+  const { data: trendsData, isLoading: trendsLoading } = useGetParcelTrendsQuery({});
+  const { data, isLoading: parcelOverviewLoading } = useGetParcelOverviewQuery({});
+  const { data: receiverPerformance, isLoading: performanceLoading } = useGetReceiverDeliveryPerformanceQuery({});
+  const { data: receiverSuccess, isLoading: successLoading } = useGetReceiverSuccessMetricsQuery({});
   const { theme } = useTheme();
   const { data: user } = useUserInfoQuery(undefined)
   const userRole = user?.data?.role
-  console.log(userRole);
+  //console.log(userRole);
 
 
   const overviewData = data?.data;
@@ -185,76 +186,79 @@ export default function GetAnalytics() {
   };
 
   // ---------------- Receiver Delivery Performance (Bar) ----------------
-const perfDataArray = receiverPerformance?.data?.[0]?.performance || [];
+  const perfDataArray = receiverPerformance?.data?.[0]?.performance || [];
 
-const perfTrendChartData = {
-  labels: perfDataArray.map((item: any) => String(item.month)) || [],
-  datasets: [
-    {
-      label: "Total Delivered",
-      data: perfDataArray.map((item: any) => Number(item.onTime + item.late) || 0),
-      borderColor: "#4BC0C0",
-      backgroundColor: "rgba(75, 192, 192)",
-      fill: true,
-      tension: 0.3,
-    },
-    {
-      label: "On Time",
-      data: perfDataArray.map((item: any) => Number(item.onTime) || 0),
-      borderColor: "#36A2EB",
-      backgroundColor: "rgba(54, 162, 235)",
-      fill: true,
-      tension: 0.3,
-    },
-    {
-      label: "Late",
-      data: perfDataArray.map((item: any) => Number(item.late) || 0),
-      borderColor: "#FF6384",
-      backgroundColor: "rgba(255, 99, 132)",
-      fill: true,
-      tension: 0.3,
-    },
-  ],
-};
+  const perfTrendChartData = {
+    labels: perfDataArray.map((item: any) => String(item.month)) || [],
+    datasets: [
+      {
+        label: "Total Delivered",
+        data: perfDataArray.map((item: any) => Number(item.onTime + item.late) || 0),
+        borderColor: "#4BC0C0",
+        backgroundColor: "rgba(75, 192, 192)",
+        fill: true,
+        tension: 0.3,
+      },
+      {
+        label: "On Time",
+        data: perfDataArray.map((item: any) => Number(item.onTime) || 0),
+        borderColor: "#36A2EB",
+        backgroundColor: "rgba(54, 162, 235)",
+        fill: true,
+        tension: 0.3,
+      },
+      {
+        label: "Late",
+        data: perfDataArray.map((item: any) => Number(item.late) || 0),
+        borderColor: "#FF6384",
+        backgroundColor: "rgba(255, 99, 132)",
+        fill: true,
+        tension: 0.3,
+      },
+    ],
+  };
 
-const perfTrendChartOptions = {
-  plugins: {
-    datalabels: { color: labelColor, font: { weight: 700 } },
-    legend: { labels: { color: labelColor } },
-  },
-  scales: {
-    x: { ticks: { color: labelColor }, grid: { color: gridColor, borderColor } },
-    y: { ticks: { color: labelColor }, grid: { color: gridColor, borderColor } },
-  },
-};
+  const perfTrendChartOptions = {
+    plugins: {
+      datalabels: { color: labelColor, font: { weight: 700 } },
+      legend: { labels: { color: labelColor } },
+    },
+    scales: {
+      x: { ticks: { color: labelColor }, grid: { color: gridColor, borderColor } },
+      y: { ticks: { color: labelColor }, grid: { color: gridColor, borderColor } },
+    },
+  };
 
+  if (isLoading || distributionLoading || successLoading || performanceLoading || trendsLoading || parcelOverviewLoading) {
+    return <SkeletonCard />
+  }
   return (
     <div className="w-full max-w-5xl mx-auto space-y-10 px-5 mb-28">
       {/* Parcel Overview */}
       <div className="w-full">
-        <h2 className="font-semibold text-lg mb-2">Parcel Overview</h2>
+        <h2 className="font-semibold text-lg mb-2 uppercase">Parcel Overview</h2>
         <div className="overflow-x-auto w-full">
           <div className="bg-background overflow-hidden rounded-md border w-full">
-            <Table className="w-full table-fixed">
+            <Table className="w-full table-fixed dark:bg-gray-900">
               <TableBody>
                 <TableRow className="border-b border-border hover:bg-transparent [&>:not(:last-child)]:border-r">
-                  <TableCell className="bg-muted/50 py-2 font-medium">Delivered</TableCell>
+                  <TableCell className="bg-muted/50 py-2 font-semibold">Delivered</TableCell>
                   <TableCell className="py-2 text-center">{overviewData?.delivered}</TableCell>
                 </TableRow>
                 <TableRow className="border-b border-border hover:bg-transparent [&>:not(:last-child)]:border-r">
-                  <TableCell className="bg-muted/50 py-2 font-medium">In Transit</TableCell>
+                  <TableCell className="bg-muted/50 py-2 font-semibold">In Transit</TableCell>
                   <TableCell className="py-2 text-center">{overviewData?.inTransit}</TableCell>
                 </TableRow>
                 <TableRow className="border-b border-border hover:bg-transparent [&>:not(:last-child)]:border-r">
-                  <TableCell className="bg-muted/50 py-2 font-medium">Pending</TableCell>
+                  <TableCell className="bg-muted/50 py-2 font-semibold">Pending</TableCell>
                   <TableCell className="py-2 text-center">{overviewData?.pending}</TableCell>
                 </TableRow>
                 <TableRow className="border-b border-border hover:bg-transparent [&>:not(:last-child)]:border-r">
-                  <TableCell className="bg-muted/50 py-2 font-medium">Canceled</TableCell>
+                  <TableCell className="bg-muted/50 py-2 font-semibold">Canceled</TableCell>
                   <TableCell className="py-2 text-center">{overviewData?.canceled}</TableCell>
                 </TableRow>
                 <TableRow className="hover:bg-transparent [&>:not(:last-child)]:border-r">
-                  <TableCell className="bg-muted/50 py-2 font-medium">Total</TableCell>
+                  <TableCell className="bg-muted/50 py-2 font-semibold">Total</TableCell>
                   <TableCell className="py-2 text-center">{overviewData?.total}</TableCell>
                 </TableRow>
               </TableBody>
@@ -265,20 +269,20 @@ const perfTrendChartOptions = {
 
       {/* admin & sender */}
       {
-        userRole === 'admin' || userRole === 'sender'  ?
-        <div className="lg:flex justify-between items-start gap-8 my-16 lg:my-28">
-        <div className="w-full">
-          <h2 className="text-lg font-semibold mb-3 dark:text-white">Status Distribution</h2>
-          <Pie data={distributionChartData} options={distributionChartOptions} />
-        </div>
+        userRole === 'admin' || userRole === 'sender' ?
+          <div className="lg:flex justify-between items-start gap-8 my-16 lg:my-28">
+            <div className="w-full">
+              <h2 className="text-lg font-semibold mb-3 dark:text-white uppercase">Status Distribution</h2>
+              <Pie data={distributionChartData} options={distributionChartOptions} />
+            </div>
 
-        <div className="w-full lg:h-[400px] mt-16 lg:mt-0">
-          <h2 className="text-lg font-semibold mb-3 dark:text-white">Parcel Trends (Month-wise)</h2>
-          <Bar data={trendsChartData as any} options={trendsChartOptions} />
-        </div>
-      </div>
-      :
-      <></>
+            <div className="w-full lg:h-[400px] mt-16 lg:mt-0">
+              <h2 className="text-lg font-semibold mb-3 dark:text-white uppercase">Parcel Trends (Month-wise)</h2>
+              <Bar data={trendsChartData as any} options={trendsChartOptions} className="bg-gray-50 dark:bg-gray-900 rounded-md p-2" />
+            </div>
+          </div>
+          :
+          <></>
       }
 
 
@@ -287,13 +291,13 @@ const perfTrendChartOptions = {
         userRole === 'receiver' ?
           <div className="lg:flex justify-between items-start gap-8 my-16">
             <div className="w-full">
-              <h2 className="text-lg font-semibold mb-3 dark:text-white">Success Metrics</h2>
+              <h2 className="text-lg font-semibold mb-3 dark:text-white uppercase">Success Metrics</h2>
               <Pie data={successChartData} options={successChartOptions} />
             </div>
 
             <div className="w-full lg:h-[400px] mt-16 lg:mt-0">
-              <h2 className="text-lg font-semibold mb-3 dark:text-white">Delivery Performance</h2>
-              <Bar data={perfTrendChartData} options={perfTrendChartOptions} />
+              <h2 className="text-lg font-semibold mb-3 dark:text-white uppercase">Delivery Performance</h2>
+              <Bar data={perfTrendChartData} options={perfTrendChartOptions} className="bg-gray-50 dark:bg-gray-900 rounded-md p-2" />
             </div>
           </div>
           :
@@ -301,8 +305,8 @@ const perfTrendChartOptions = {
       }
 
       <div>
-        <h2 className="text-lg font-semibold mb-3 dark:text-white">Monthly Shipments (Current Year)</h2>
-        <Line data={monthlyChartData} options={monthlyChartOptions} />
+        <h2 className="text-lg font-semibold mb-3 dark:text-white uppercase">Monthly Shipments (Current Year)</h2>
+        <Line data={monthlyChartData} options={monthlyChartOptions} className="bg-gray-50 dark:bg-gray-900 p-5 rounded-md" />
       </div>
 
 

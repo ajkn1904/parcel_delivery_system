@@ -12,6 +12,8 @@ import BlockOrCancelOrDeleteConfirmation from "@/components/BlockOrCancelOrDelet
 import ParcelDetailsModal from "@/utils/ParcelDetailsModal";
 
 export default function Parcel() {
+    const [activeRow, setActiveRow] = useState<string | null>(null);
+    const [hoveredRow, setHoveredRow] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const parcelsPerPage = 10;
     const navigate = useNavigate();
@@ -98,7 +100,10 @@ export default function Parcel() {
 
                         <TableBody>
                             {parcelData.map((parcel: any, index: number) => (
-                                <TableRow key={parcel._id}>
+                                <TableRow key={parcel._id} onClick={() => setActiveRow(parcel._id)}
+                                    onMouseEnter={() => setHoveredRow(parcel._id)}
+                                    onMouseLeave={() => { setActiveRow(null); setHoveredRow(null) }}
+                                    className={`cursor-pointer ${(activeRow === parcel._id) ? "bg-blue-500 dark:bg-gray-600" : "hover:bg-blue-100 hover:text-black dark:hover:bg-gray-800 dark:hover:text-white"}`}>
                                     <TableCell className="font-medium border-r-2">
                                         {(currentPage - 1) * parcelsPerPage + index + 1}
                                     </TableCell>
@@ -119,36 +124,70 @@ export default function Parcel() {
                                         <Button
                                             variant={"outline"}
                                             size="sm"
-                                            className="text-orange-500 hover:bg-orange-500 hover:text-white"
+                                            className={`${activeRow === parcel._id || hoveredRow === parcel._id ? "bg-orange-400 text-white" : "text-orange-400"} hover:bg-orange-500 hover:text-white`}
                                             onClick={() => navigate(`/tracking/${parcel._id}`, { state: { trackingId: parcel.trackingId } })}
                                         >
                                             TRACK
                                         </Button>
 
-                                        {/* OPEN MODAL ON CLICK */}
-                                        <Button size="sm" className="text-white" onClick={() => openModal(parcel._id)}>
+
+                                        <Button size="sm" variant={"outline"} className={`${activeRow === parcel._id || hoveredRow === parcel._id ? "bg-blue-500 text-white" : "text-blue-500"} hover:bg-blue-600 hover:text-white`} onClick={() => openModal(parcel._id)}>
                                             VIEW
                                         </Button>
 
-                                        {(parcel.currentStatus === "Requested" || parcel.currentStatus === "Approved") ? (
-                                            <BlockOrCancelOrDeleteConfirmation
-                                                onConfirm={() => handleParcelStatus(parcel)}
-                                                actionType={"cancel"}
-                                                customTitle={parcel.trackingId}
-                                            >
-                                                <Button variant={"destructive"} size="sm" className="w-[76px] ">
-                                                    CANCEL
+                                        {
+                                            parcel.currentStatus === "Requested" || parcel.currentStatus === "Approved" ? (
+                                                <BlockOrCancelOrDeleteConfirmation
+                                                    onConfirm={() => handleParcelStatus(parcel)}
+                                                    actionType="cancel"
+                                                    customTitle={parcel.trackingId}
+                                                >
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        className={`w-[76px] ${activeRow === parcel._id || hoveredRow === parcel._id ? "bg-red-400 text-white" : "text-white"} hover:bg-red-500 hover:text-white`}
+                                                    >
+                                                        CANCEL
+                                                    </Button>
+                                                </BlockOrCancelOrDeleteConfirmation>
+                                            ) : parcel.currentStatus === "Dispatched" ? (
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="w-[76px] text-violet-600 dark:text-violet-500"
+                                                    disabled
+                                                >
+                                                    DISPATCHED
                                                 </Button>
-                                            </BlockOrCancelOrDeleteConfirmation>
-                                        ) : parcel.currentStatus === "Canceled" ? (
-                                            <Button variant={"outline"} size="sm" className=" text-red-500 dark:text-red-400" disabled>
-                                                CANCELED
-                                            </Button>
-                                        ) : (
-                                            <Button variant={"outline"} size="sm" className=" text-green-600 dark:text-green-500" disabled>
-                                                DISPATCH
-                                            </Button>
-                                        )}
+                                            ) : parcel.currentStatus === "In Transit" ? (
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="w-[76px] text-blue-600 dark:text-blue-500"
+                                                    disabled
+                                                >
+                                                    IN TRANSIT
+                                                </Button>
+                                            ) : parcel.currentStatus === "Delivered" ? (
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="w-[76px] text-green-500 dark:text-green-400"
+                                                    disabled
+                                                >
+                                                    DELIVERED
+                                                </Button>
+                                            ) : parcel.currentStatus === "Canceled" ? (
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="w-[76px] text-red-600 dark:text-red-500"
+                                                    disabled
+                                                >
+                                                    CANCELED
+                                                </Button>
+                                            ) : null}
+
                                     </TableCell>
                                 </TableRow>
                             ))}

@@ -44,7 +44,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-accent/80 border-b px-4 md:px-6">
+    <header className="sticky top-0 z-50 bg-accent/80 border-b px-4 md:px-6 uppercase">
       <div className="flex h-16 justify-between gap-4">
         {/* Left side */}
         <div className="flex gap-2">
@@ -173,12 +173,12 @@ export default function Navbar() {
               variant="outline"
               className="text-sm"
             >
-              Logout
+              LOGOUT
             </Button>
           )}
           {!data?.data?.email && (
             <Button asChild className="text-sm dark:text-foreground">
-              <Link to="/login">Login</Link>
+              <Link to="/login">LOGIN</Link>
             </Button>
           )}
         </div>

@@ -19,32 +19,32 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-export function ParcelModal({ tId, sender, receiver, parcelData }: { tId: string; sender: string; receiver: string; parcelData: any }) {
+export function ParcelModal({ parcelData, activeRow, hoveredRow }: { parcelData: any, activeRow: any, hoveredRow: any }) {
   console.log(parcelData);
 
   const [open, setOpen] = useState(false);
   const [parcelStatusUpdate] = useUpdateParcelByAdminMutation();
 
-const form = useForm({
-  defaultValues: {
-    currentStatus: "",
-    note: "",
-    location: "",
-  },
-});
+  const form = useForm({
+    defaultValues: {
+      currentStatus: "",
+      note: "",
+      location: "",
+    },
+  });
 
-// 🔹 Reset form values whenever modal opens with fresh data
-useEffect(() => {
-  if (open && parcelData) {
-    const lastLog = parcelData.trackingEvents?.[parcelData.trackingEvents.length - 1] || {};
+  // 🔹 Reset form values whenever modal opens with fresh data
+  useEffect(() => {
+    if (open && parcelData) {
+      const lastLog = parcelData.trackingEvents?.[parcelData.trackingEvents.length - 1] || {};
 
-    form.reset({
-      currentStatus: parcelData.currentStatus || "",
-      note: lastLog.note || "",
-      location: lastLog.location || "",
-    });
-  }
-}, [open, parcelData, form]);
+      form.reset({
+        currentStatus: parcelData.currentStatus || "",
+        note: lastLog.note || "",
+        location: lastLog.location || "",
+      });
+    }
+  }, [open, parcelData, form]);
 
   const { formState } = form;
 
@@ -91,7 +91,7 @@ useEffect(() => {
         <Button
           variant={"outline"}
           size="sm"
-          className="text-blue-600 hover:bg-blue-600 hover:text-white"
+          className={`${activeRow === parcelData._id || hoveredRow === parcelData._id ? "bg-blue-400 text-white" : "text-blue-400"} hover:bg-blue-600 dark:hover:bg-blue-700 hover:text-white`}
         >
           <Edit2 />
         </Button>
@@ -102,20 +102,30 @@ useEffect(() => {
           <DialogTitle>
             <div className="text-center mb-4 text-2xl">Update Parcel Status</div>
             <div className="text-start my-2">
-              Tracking ID: <span className="font-light"> {tId}</span>
+              Tracking ID: <span className="font-light"> {parcelData.trackingId}</span>
             </div>
             <p className="text-start my-2">
+              Estimate Delivery: <span className="font-light">{new Date(parcelData.estimatedDeliveryDate).toDateString()}</span>
+            </p>
+            <p className="text-start my-2">
               Sender:{" "}
-              <a href={`mailto:${sender}`} className="font-light text-blue-400">
-                {sender}
+              <a href={`mailto:${parcelData.sender.email}`} className="font-light text-blue-400">
+                {parcelData.sender.email}
               </a>
             </p>
             <p className="text-start my-2">
               Receiver:{" "}
-              <a href={`mailto:${receiver}`} className="font-light text-blue-400">
-                {receiver}
+              <a href={`mailto:${parcelData?.receiver?.email}`} className="font-light text-blue-400">
+                {parcelData?.receiver?.email}
               </a>
             </p>
+            <p className="text-start my-2">
+              From: <span className="font-light">{parcelData.pickupAddress}</span>
+            </p>
+            <p className="text-start my-2">
+              To: <span className="font-light">{parcelData.deliveryAddress}</span>
+            </p>
+
           </DialogTitle>
         </DialogHeader>
 
@@ -156,14 +166,14 @@ useEffect(() => {
                 name="location"
                 render={({ field }) => (
                   <FormItem className="grow-1">
-                    <FormLabel>Location</FormLabel>
+                    <FormLabel>Current Location</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
-            />
+              />
             </div>
 
 

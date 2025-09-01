@@ -22,7 +22,7 @@ const FormSchema = z.object({
 })
 
 
-export function CouponModal({ id, code, discountPercentage, expiryDate }: { id: string; code: string; discountPercentage: number; expiryDate: string }) {
+export function CouponModal({ id, code, discountPercentage, expiryDate, activeRow, hoveredRow }: { id: string; code: string; discountPercentage: number; expiryDate: string, activeRow: any, hoveredRow: any }) {
     console.log(id, code, expiryDate, discountPercentage);
 
     const [open, setOpen] = useState(false);
@@ -68,7 +68,7 @@ export function CouponModal({ id, code, discountPercentage, expiryDate }: { id: 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant={"outline"} size="sm" className="text-blue-600 hover:bg-blue-600 hover:text-white">
+                <Button variant={"outline"} size="sm" className={`${activeRow === id || hoveredRow === id ? "bg-blue-400 text-white" : "text-blue-400"} hover:bg-blue-600 dark:hover:bg-blue-700 hover:text-white`}>
                     <Edit2 />
                 </Button>
             </DialogTrigger>
@@ -124,10 +124,10 @@ export function CouponModal({ id, code, discountPercentage, expiryDate }: { id: 
                                     <Popover>
                                         <PopoverTrigger asChild>
                                             <FormControl>
-                                                <Button variant={"outline"}className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
-                                                    {field.value ? 
-                                                        (format(field.value, "PPP")) 
-                                                        : 
+                                                <Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
+                                                    {field.value ?
+                                                        (format(field.value, "PPP"))
+                                                        :
                                                         (<span>Pick a date</span>)
                                                     }
                                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
@@ -135,7 +135,7 @@ export function CouponModal({ id, code, discountPercentage, expiryDate }: { id: 
                                             </FormControl>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-auto p-0" align="start">
-                                            <Calendar mode="single" selected={new Date(field.value)} onSelect={field.onChange} disabled={(date) => date <new Date(new Date().setDate(new Date().getDate() - 1))} captionLayout="dropdown"/>
+                                            <Calendar mode="single" selected={new Date(field.value)} onSelect={field.onChange} disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))} captionLayout="dropdown" />
                                         </PopoverContent>
                                     </Popover>
                                     <FormMessage />

@@ -85,7 +85,7 @@ export default function Footer() {
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-4">
             <div>
-              <p className="font-medium text-gray-900 dark:text-foreground">Services</p>
+              <p className="font-semibold text-gray-900 dark:text-foreground uppercase">Services</p>
 
               <ul className="mt-6 space-y-4 text-sm">
                 <li>
@@ -141,7 +141,7 @@ export default function Footer() {
             </div>
 
             <div>
-              <p className="font-medium text-gray-900 dark:text-foreground">Company</p>
+              <p className="font-semibold text-gray-900 dark:text-foreground uppercase">Company</p>
 
               <ul className="mt-6 space-y-4 text-sm">
                 <li>
@@ -177,7 +177,7 @@ export default function Footer() {
             </div>
 
             <div>
-              <p className="font-medium text-gray-900 dark:text-foreground">Helpful Links</p>
+              <p className="font-semibold text-gray-900 dark:text-foreground uppercase">Helpful Links</p>
 
               <ul className="mt-6 space-y-4 text-sm">
                 <li>
@@ -213,7 +213,7 @@ export default function Footer() {
             </div>
 
             <div>
-              <p className="font-medium text-gray-900 dark:text-foreground">Legal</p>
+              <p className="font-semibold text-gray-900 dark:text-foreground uppercase">Legal</p>
 
               <ul className="mt-6 space-y-4 text-sm">
                 <li>

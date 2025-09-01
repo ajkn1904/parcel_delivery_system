@@ -26,17 +26,17 @@ const registerSchema = z
       .max(50),
     email: z.email(),
     phone: z
-    .string({ error: "Phone must be a string" })
-    .regex(/^(?:\+8801\d{9}|01\d{9})$/, {
-      message:
-        "Phone number must be valid for Bangladesh. Format: +8801XXXXXXXXX or 01XXXXXXXXX",
-    }),
+      .string({ error: "Phone must be a string" })
+      .regex(/^(?:\+8801\d{9}|01\d{9})$/, {
+        message:
+          "Phone number must be valid for Bangladesh. Format: +8801XXXXXXXXX or 01XXXXXXXXX",
+      }),
     role: z.string(),
     address: z
-    .string({ error: "Address must be a string" })
-    .max(200, 
-      { message: "Address cannot exceed 200 characters" }
-    ),
+      .string({ error: "Address must be a string" })
+      .max(200,
+        { message: "Address cannot exceed 200 characters" }
+      ),
     password: z.string().min(6, { error: "Password is too short" }),
     confirmPassword: z
       .string()
@@ -51,7 +51,7 @@ export function RegisterForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  
+
   const [register] = useRegisterMutation();
   const navigate = useNavigate();
 
@@ -59,10 +59,10 @@ export function RegisterForm({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "John Doe",
-      email: "",
-      phone: "",
+      email: "john@gmail.com",
+      phone: "+8801234567890",
       role: "receiver",
-      address: "",
+      address: "Kotwali, Chittagong",
       password: "Abc@123",
       confirmPassword: "",
     },
@@ -84,10 +84,10 @@ export function RegisterForm({
     try {
       const result = await register(userInfo).unwrap();
       console.log(result);
-      if(result.success){
+      if (result.success) {
         form.reset();
       }
-      toast.success("User created successfully", {id: toastId});
+      toast.success("User created successfully", { id: toastId });
       navigate("/login", { state: data.email });
     }
     catch (error) {
@@ -107,9 +107,9 @@ export function RegisterForm({
         });
         toast.error(err?.data?.message || "Something went wrong", { id: toastId });
       }
-}
+    }
 
-    
+
   };
 
 
@@ -117,7 +117,7 @@ export function RegisterForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Register your account</h1>
+        <h1 className="text-2xl font-semibold text-orange-500 dark:text-orange-400 mb-10 uppercase">Register your account</h1>
         <p className="text-sm text-muted-foreground">
           Enter your details to create an account
         </p>
@@ -151,7 +151,7 @@ export function RegisterForm({
                   <FormControl>
                     <Input placeholder="john@example.com" {...field} value={field.value || ""} />
                   </FormControl>
-                  <FormMessage /> 
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -189,9 +189,9 @@ export function RegisterForm({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>Role</SelectLabel> 
-                              <SelectItem value={"sender"}>Sender</SelectItem>
-                              <SelectItem value={"receiver"}>Receiver</SelectItem>
+                          <SelectLabel>Role</SelectLabel>
+                          <SelectItem value={"sender"}>Sender</SelectItem>
+                          <SelectItem value={"receiver"}>Receiver</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -272,7 +272,7 @@ export function RegisterForm({
 
       <div className="text-center text-sm">
         Already have an account?{" "}
-        <Link to="/login" className="text-primary  underline underline-offset-4">
+        <Link to="/login" className="text-primary underline underline-offset-4">
           Login
         </Link>
       </div>

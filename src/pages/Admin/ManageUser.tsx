@@ -18,6 +18,9 @@ export default function ManageUser() {
 
     const [selectedRole, setSelectedRole] = useState<string>("");
 
+
+    const [activeRow, setActiveRow] = useState<string | null>(null);
+    const [hoveredRow, setHoveredRow] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 5;
 
@@ -92,8 +95,8 @@ export default function ManageUser() {
 
 
                 {/* ⬇️ Role filter */}
-                <div className="w-48 flex justify-between align-middle gap-2">
-                    <Label>Role</Label>
+                <div className="w-48 flex justify-between items-center align-middle gap-2">
+                    <Label className="font-semibold uppercase">Role</Label>
                     <Select onValueChange={(value) => setSelectedRole(value)} value={selectedRole || "all"}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select Role" />
@@ -114,20 +117,26 @@ export default function ManageUser() {
 
 
             <div className="border border-muted rounded-md">
-                <Table>
-                    <TableHeader>
+                <Table className="bg-gray-50 dark:bg-gray-900">
+                    <TableHeader className="bg-blue-200 dark:bg-blue-900">
                         <TableRow>
-                            <TableHead className="">Name</TableHead>
-                            <TableHead className="">Email</TableHead>
-                            <TableHead className="">Role</TableHead>
-                            <TableHead className="">Is-blocked</TableHead>
-                            <TableHead className="">Is-deleted</TableHead>
-                            <TableHead className=" border-l-2 text-center">Action</TableHead>
+                            <TableHead className="uppercase font-bold border-r-2">No.</TableHead>
+                            <TableHead className="uppercase font-bold">Name</TableHead>
+                            <TableHead className="uppercase font-bold">Email</TableHead>
+                            <TableHead className="uppercase font-bold">Role</TableHead>
+                            <TableHead className="uppercase font-bold">Is-blocked</TableHead>
+                            <TableHead className="uppercase font-bold">Is-deleted</TableHead>
+                            <TableHead className="uppercase font-bold border-l-2 text-center">Action</TableHead>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
-                        {currentUsers?.map((user: { _id: string, name: string, email: string, role: string, isBlocked: boolean, isDeleted: boolean, }) => (
-                            <TableRow key={user._id}>
+                    <TableBody className="bg-gray-50 dark:bg-gray-900">
+                        {currentUsers?.map((user: { _id: string, name: string, email: string, role: string, isBlocked: boolean, isDeleted: boolean, }, index: number) => (
+                            <TableRow key={user._id}
+                                onClick={() => setActiveRow(user._id)}
+                                onMouseEnter={() => setHoveredRow(user._id)}
+                                onMouseLeave={() => { setActiveRow(null); setHoveredRow(null) }}
+                                className={`cursor-pointer ${(activeRow === user._id) ? "bg-blue-500 dark:bg-gray-600" : "hover:bg-blue-100 hover:text-black dark:hover:bg-gray-800 dark:hover:text-white"}`}>
+                                <TableCell className="font-medium border-r-2">{(currentPage - 1) * usersPerPage + index + 1}</TableCell>
                                 <TableCell className="font-medium">
                                     {user?.name}
                                 </TableCell>
@@ -151,21 +160,21 @@ export default function ManageUser() {
 
                                     <BlockOrDeleteConfirmation onConfirm={() => handleBlockUser(user._id, user)} actionType={user.isBlocked ? "unblock" : "block"} customTitle={user.email}>
                                         {user.isBlocked ?
-                                            <Button variant={"outline"} size="sm" className="text-green-500 hover:bg-green-500 hover:text-white">
+                                            <Button variant={"outline"} size="sm" className={`${activeRow === user._id || hoveredRow === user._id ? "bg-green-400 text-white" : "text-green-400"} hover:bg-green-500 hover:text-white`}>
                                                 <UserCheckIcon />
                                             </Button>
                                             :
-                                            <Button variant={"outline"} size="sm" className="text-red-500 hover:bg-red-500 hover:text-white">
+                                            <Button variant={"outline"} size="sm" className={`${activeRow === user._id || hoveredRow === user._id ? "bg-red-400 text-white" : "text-red-400"} hover:bg-red-500 hover:text-white`}>
                                                 <Ban />
                                             </Button>}
                                     </BlockOrDeleteConfirmation>
                                     <BlockOrDeleteConfirmation onConfirm={() => handleDeleteUser(user._id, user)} actionType={user.isDeleted ? "restore" : "delete"} customTitle={user.email}>
                                         {user.isDeleted ?
-                                            <Button variant={"outline"} size="sm" className="text-green-500 hover:bg-green-500 hover:text-white">
+                                            <Button variant={"outline"} size="sm" className={`${activeRow === user._id || hoveredRow === user._id ? "bg-green-400 text-white" : "text-green-400"} hover:bg-green-500 hover:text-white`}>
                                                 <ArchiveRestoreIcon />
                                             </Button>
                                             :
-                                            <Button variant={"outline"} size="sm" className="text-red-500 hover:bg-red-500 hover:text-white">
+                                            <Button variant={"outline"} size="sm" className={`${activeRow === user._id || hoveredRow === user._id ? "bg-red-400 text-white" : "text-red-400"} hover:bg-red-500 hover:text-white`}>
                                                 <Trash2 />
                                             </Button>
                                         }

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import Password from "@/components/ui/Password";
 import config from "@/config";
 import { cn } from "@/lib/utils";
 import { authApi, useLoginMutation } from "@/redux/features/auth/auth.api";
@@ -10,72 +11,76 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
-import {z} from "zod";
+import { z } from "zod";
 
 const loginSchema = z
   .object({
-    email: z.email({error: "Email cannot be empty!"}),
-    password: z.string({error: "Password cannot be empty!"}),
-})
+    email: z.email({ error: "Email cannot be empty!" }),
+    password: z.string({ error: "Password cannot be empty!" }),
+  })
 
 
 export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   //const form = useForm();
   const [login] = useLoginMutation();
- const form = useForm<z.infer<typeof loginSchema>>({
-      resolver: zodResolver(loginSchema)
-    });
-  
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "sender@gmail.com",
+      password: "Abc@123",
+    },
+  });
+
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     const toastId = toast.loading("Wait for a while...")
     try {
       const res = await login(data).unwrap();
       //console.log(res);
       if (res.success) {
-        toast.success("Logged in successfully", {id: toastId});
+        toast.success("Logged in successfully", { id: toastId });
         dispatch(authApi.util.invalidateTags(["USER"]));
-        
-      const userRole = res?.data?.user?.role;
 
-      // 🚀 Redirect based on role
-      if (userRole === "admin") {
-        navigate("/admin");
-      } else if (userRole === "sender") {
-        navigate("/sender");
-      } else if (userRole === "receiver") {
-        navigate("/receiver");
-      } else {
-        navigate("/");
-      };
+        const userRole = res?.data?.user?.role;
+
+        // 🚀 Redirect based on role
+        if (userRole === "admin") {
+          navigate("/admin");
+        } else if (userRole === "sender") {
+          navigate("/sender");
+        } else if (userRole === "receiver") {
+          navigate("/receiver");
+        } else {
+          navigate("/");
+        };
       }
-    } 
+    }
     catch (error) {
       const err = error as { data?: { message?: string } };
 
       if ((err as any).data.message === "Password Does not Match!") {
-          form.setError("password", {
-            type: "manual",
-            message: err?.data?.message || "Something went wrong",
-          });
-          toast.error(err?.data?.message || "Something went wrong", { id: toastId });
-        }
-        else if ((err as any).data.message === "User Does not Exists!") {
-          form.setError("email", {
-            type: "manual",
-            message: err?.data?.message || "Something went wrong",
-          });
-          toast.error(err?.data?.message || "Something went wrong", { id: toastId });
-        }
+        form.setError("password", {
+          type: "manual",
+          message: err?.data?.message || "Something went wrong",
+        });
+        toast.error(err?.data?.message || "Something went wrong", { id: toastId });
+      }
+      else if ((err as any).data.message === "User Does not Exists!") {
+        form.setError("email", {
+          type: "manual",
+          message: err?.data?.message || "Something went wrong",
+        });
+        toast.error(err?.data?.message || "Something went wrong", { id: toastId });
+      }
     }
   };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Login to your account</h1>
+        <h1 className="text-2xl font-semibold text-orange-500 dark:text-orange-400 mb-10 uppercase">Login to your account</h1>
         <p className="text-balance text-sm text-muted-foreground">
           Enter your email below to login to your account
         </p>
@@ -91,7 +96,7 @@ export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivE
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="john@example.com"
+                      defaultValue="sender@gmail.com"
                       {...field}
                       value={field.value || ""}
                     />
@@ -108,13 +113,11 @@ export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivE
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Abc@123"
-                      {...field}
-                      value={field.value || ""}
-                    />
+                    <Password {...field} />
                   </FormControl>
+                  <FormDescription className="sr-only">
+                    This is your password.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -143,7 +146,7 @@ export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivE
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
-        <Link to="/register" replace className="underline underline-offset-4">
+        <Link to="/register" replace className="text-primary underline underline-offset-4">
           Register
         </Link>
       </div>

@@ -14,7 +14,10 @@ import { useNavigate, useSearchParams } from "react-router";
 
 export default function ManageParcel() {
     const [currentPage, setCurrentPage] = useState(1);
-    const parcelsPerPage = 10;
+    const [activeRow, setActiveRow] = useState<string | null>(null);
+    const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+
+    const parcelsPerPage = 5;
     const navigate = useNavigate()
 
     const [searchParams] = useSearchParams();
@@ -81,35 +84,42 @@ export default function ManageParcel() {
                 <ParcelSearchFilter />
             </div>
 
-            <div className="border border-muted rounded-md">
+            <div className="border border-muted rounded-4xl">
                 {parcelData < 1 ?
                     <p className="font-bold text-xl text-center mx-auto">No Data Found</p>
                     :
                     <Table>
                         <TableHeader className="bg-blue-200 dark:bg-blue-900">
                             <TableRow >
-                                <TableHead className="border-r-2">No.</TableHead>
-                                <TableHead>Tracking ID</TableHead>
-                                <TableHead>Type</TableHead>
-                                <TableHead>Sender</TableHead>
-                                <TableHead>Receiver</TableHead>
-                                <TableHead>Pickup Address</TableHead>
-                                <TableHead>Delivery Address</TableHead>
-                                <TableHead>Delivery Method</TableHead>
-                                <TableHead>Weight (kg)</TableHead>
-                                <TableHead>Delivery Fee</TableHead>
-                                <TableHead>Discount</TableHead>
-                                <TableHead>After Discount</TableHead>
-                                <TableHead>Payment Method</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Created At</TableHead>
-                                <TableHead className="border-l-2 text-center">Action</TableHead>
+                                <TableHead className="border-r-2 uppercase font-bold">No.</TableHead>
+                                <TableHead className="uppercase font-bold">Tracking ID</TableHead>
+                                <TableHead className="uppercase font-bold">Type</TableHead>
+                                <TableHead className="uppercase font-bold">Sender</TableHead>
+                                <TableHead className="uppercase font-bold">Receiver</TableHead>
+                                <TableHead className="uppercase font-bold">Pickup Address</TableHead>
+                                <TableHead className="uppercase font-bold">Delivery Address</TableHead>
+                                <TableHead className="uppercase font-bold">Delivery Method</TableHead>
+                                <TableHead className="uppercase font-bold">Weight (kg)</TableHead>
+                                <TableHead className="uppercase font-bold">Delivery Fee</TableHead>
+                                <TableHead className="uppercase font-bold">Discount</TableHead>
+                                <TableHead className="uppercase font-bold">After Discount</TableHead>
+                                <TableHead className="uppercase font-bold">Payment Method</TableHead>
+                                <TableHead className="uppercase font-bold">Status</TableHead>
+                                <TableHead className="uppercase font-bold">Estimated D.Date</TableHead>
+                                <TableHead className="uppercase font-bold">Created At</TableHead>
+                                <TableHead className="border-l-2 text-center uppercase font-bold">Action</TableHead>
                             </TableRow>
                         </TableHeader>
 
-                        <TableBody>
+                        <TableBody className="bg-gray-50 dark:bg-gray-900">
                             {parcelData.map((parcel: any, index: number) => (
-                                <TableRow key={parcel._id}>
+                                <TableRow
+                                    key={parcel._id}
+                                    onClick={() => setActiveRow(parcel._id)}
+                                    onMouseEnter={() => setHoveredRow(parcel._id)}
+                                    onMouseLeave={() => { setActiveRow(null); setHoveredRow(null) }}
+                                    className={`cursor-pointer ${(activeRow === parcel._id) ? "bg-blue-500 dark:bg-gray-600" : "hover:bg-blue-100 hover:text-black dark:hover:bg-gray-800 dark:hover:text-white"}`}
+                                >
                                     <TableCell className="font-medium border-r-2">{(currentPage - 1) * parcelsPerPage + index + 1}</TableCell>
                                     <TableCell className="font-medium">{parcel.trackingId}</TableCell>
                                     <TableCell>{parcel.parcelType}</TableCell>
@@ -124,30 +134,32 @@ export default function ManageParcel() {
                                     <TableCell>{parcel.afterDiscountDeliveryFee ? parcel.afterDiscountDeliveryFee + 'tk' : ''}</TableCell>
                                     <TableCell>{parcel.paymentMethod}</TableCell>
                                     <TableCell className="font-medium">{parcel.currentStatus}</TableCell>
-                                    <TableCell>{new Date(parcel.createdAt).toLocaleString("PP")}</TableCell>
-                                    <TableCell className="flex justify-between gap-2 border-l-2">
-
-                                        <Button variant={"outline"} size="sm" className="text-orange-500 hover:bg-orange-500 hover:text-white"
-                                            onClick={() => navigate(`/tracking/${parcel._id}`)}>
+                                    <TableCell>{new Date(parcel.estimatedDeliveryDate).toDateString()}</TableCell>
+                                    <TableCell>{new Date(parcel.createdAt).toDateString()}</TableCell>
+                                    <TableCell className="flex gap-2">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className={`${activeRow === parcel._id || hoveredRow === parcel._id ? "bg-orange-400 text-white" : "text-orange-400"} hover:bg-orange-600 dark:hover:bg-orange-500 hover:text-white`}
+                                            onClick={() => navigate(`/tracking/${parcel._id}`)}
+                                        >
                                             TRACK
                                         </Button>
 
+                                        <ParcelModal parcelData={parcel} activeRow={activeRow} hoveredRow={hoveredRow} />
 
-                                        <ParcelModal
-                                            tId={parcel.trackingId}
-                                            sender={parcel.sender?.email ?? "Unknown"}
-                                            receiver={parcel.receiver?.email ?? "Unknown"}
-                                            parcelData={parcel}
-                                        />
-
-
-                                        <BlockOrDeleteConfirmation onConfirm={() => handleDeleteParcel(parcel._id)} actionType={parcel.isDeleted ? "restore" : "delete"} customTitle={parcel.trackingId}
+                                        <BlockOrDeleteConfirmation
+                                            onConfirm={() => handleDeleteParcel(parcel._id)}
+                                            actionType={parcel.isDeleted ? "restore" : "delete"}
+                                            customTitle={parcel.trackingId}
                                         >
-                                            <Button variant={"outline"} size="sm" className="text-red-500 hover:bg-red-500 hover:text-white">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className={`${activeRow === parcel._id || hoveredRow === parcel._id ? "bg-red-400 text-white" : "text-red-400"} hover:bg-red-500 hover:text-white`} >
                                                 <Trash2 />
                                             </Button>
                                         </BlockOrDeleteConfirmation>
-
                                     </TableCell>
                                 </TableRow>
                             ))}

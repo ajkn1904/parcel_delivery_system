@@ -18,6 +18,8 @@ export default function CouponComponent() {
     //const [updateCoupon] = useUpdateCouponMutation()
     const [deleteCoupon] = useDeleteCouponMutation()
 
+    const [activeRow, setActiveRow] = useState<string | null>(null);
+    const [hoveredRow, setHoveredRow] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const couponsPerPage = 5;
 
@@ -63,19 +65,24 @@ export default function CouponComponent() {
 
 
             <div className="border border-muted rounded-md">
-                <Table>
-                    <TableHeader>
+                <Table className="bg-gray-50 dark:bg-gray-900">
+                    <TableHeader className="bg-blue-200 dark:bg-blue-900">
                         <TableRow>
-                            <TableHead className="">Code</TableHead>
-                            <TableHead className="">Discount Percentage</TableHead>
-                            <TableHead className="">Expiry Date</TableHead>
-                            <TableHead className="">Created At</TableHead>
-                            <TableHead className=" border-l-2 text-center">Action</TableHead>
+                            <TableHead className="uppercase font-bold border-r-2">No.</TableHead>
+                            <TableHead className="uppercase font-bold">Code</TableHead>
+                            <TableHead className="uppercase font-bold">Discount Percentage</TableHead>
+                            <TableHead className="uppercase font-bold">Expiry Date</TableHead>
+                            <TableHead className="uppercase font-bold">Created At</TableHead>
+                            <TableHead className="uppercase font-bold border-l-2 text-center">Action</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {currentData?.map((coupon: { _id: string, code: string, discountPercentage: string, expiryDate: any, createdAt: string, }) => (
-                            <TableRow key={coupon._id}>
+                        {currentData?.map((coupon: { _id: string, code: string, discountPercentage: string, expiryDate: any, createdAt: string, }, index: number) => (
+                            <TableRow key={coupon._id} onClick={() => setActiveRow(coupon._id)}
+                                onMouseEnter={() => setHoveredRow(coupon._id)}
+                                onMouseLeave={() => { setActiveRow(null); setHoveredRow(null) }}
+                                className={`cursor-pointer ${(activeRow === coupon._id) ? "bg-blue-500 dark:bg-gray-600" : "hover:bg-blue-100 hover:text-black dark:hover:bg-gray-800 dark:hover:text-white"} ${new Date() <= new Date(coupon?.expiryDate) ? 'bg-red-500/20 hover:bg-red-500/50' : ''}`} >
+                                <TableCell className="font-medium border-r-2">{(currentPage - 1) * couponsPerPage + index + 1}</TableCell>
                                 <TableCell className="font-medium">
                                     {coupon?.code}
                                 </TableCell>
@@ -83,7 +90,11 @@ export default function CouponComponent() {
                                     {coupon?.discountPercentage}%
                                 </TableCell>
                                 <TableCell className="font-medium">
-                                    {new Date(coupon?.expiryDate).toLocaleString()}
+                                    {
+                                        (new Date() <= new Date(coupon?.expiryDate)) ?
+                                            'EXPIRED' :
+                                            <>{new Date(coupon?.expiryDate).toDateString()}</>
+                                    }
                                 </TableCell>
                                 <TableCell className="font-medium text-center">
                                     {new Date(coupon.createdAt).toLocaleString(undefined, { year: "numeric", month: "short", day: "numeric", })}
@@ -91,15 +102,15 @@ export default function CouponComponent() {
                                 <TableCell className="flex justify-between gap-2 border-l-2">
 
                                     {/* <Button variant={"secondary"} size="sm" className="text-green-600 hover:bg-green-600 hover:text-white">
-                        <couponRoundPen />
-                    </Button> */}
+                            <couponRoundPen />
+                        </Button> */}
 
 
-                                    <CouponModal id={coupon._id} code={coupon.code} discountPercentage={Number(coupon.discountPercentage)} expiryDate={coupon.expiryDate} />
+                                    <CouponModal id={coupon._id} code={coupon.code} discountPercentage={Number(coupon.discountPercentage)} expiryDate={coupon.expiryDate} activeRow={activeRow} hoveredRow={hoveredRow} />
 
                                     <BlockOrDeleteConfirmation onConfirm={() => handleDeleteCoupon(coupon._id)} actionType={"delete"} customTitle={coupon.code}>
 
-                                        <Button variant={"outline"} size="sm" className="text-red-500 hover:bg-red-500 hover:text-white">
+                                        <Button variant={"outline"} size="sm" className={`${activeRow === coupon._id || hoveredRow === coupon._id ? "bg-red-400 text-white" : "text-red-400"} hover:bg-red-500 hover:text-white`}>
                                             <Trash2 />
                                         </Button>
 

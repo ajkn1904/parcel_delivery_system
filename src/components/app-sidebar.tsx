@@ -26,7 +26,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent className="pt-20">
         {data.navMain.map((group) => (
           <SidebarGroup key={group.title}>
-            <SidebarGroupLabel className="text-lg font-bold">
+            <SidebarGroupLabel className="text-lg font-bold uppercase">
               {group.title}
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -38,8 +38,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <SidebarMenuButton
                         asChild
                         className={`${isActive
-                            ? "text-primary dark:text-foreground font-semibold border-b-2 border-b-primary hover:border-b-primary"
-                            : "text-muted-foreground hover:text-primary dark:text-muted-foreground"
+                          ? "text-primary dark:text-foreground font-semibold border-b-2 border-b-primary hover:border-b-primary"
+                          : "text-muted-foreground hover:text-primary dark:text-muted-foreground"
                           }`}
                       >
                         <Link to={item.url}>{item.title}</Link>

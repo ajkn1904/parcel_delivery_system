@@ -9,11 +9,11 @@ export default function ParcelSearchFilter() {
   const [searchParams, setSearchParams] = useSearchParams();
 
 
-  
+
   const selectedStatus = searchParams.get("currentStatus") || "";
   const selectedType = searchParams.get("parcelType") || "";
   const selectedSort = searchParams.get("sort") || "";
-  const searchQuery = searchParams.get("search") || "";
+  const searchQuery = searchParams.get("search") || "TRK-";
 
 
 
@@ -75,91 +75,91 @@ export default function ParcelSearchFilter() {
   };
 
   return (
-    <div className="border border-muted rounded-md p-2">
-        <div className="flex justify-between items-center mb-1">
-            <h1>Search | Filter</h1>
-            <Button size="sm" variant="ghost" className="border rounded-full font-bold" onClick={handleClearFilter}>Clear</Button>
+    <div className="border border-muted rounded-md p-2 bg-gray-50 dark:bg-gray-900">
+      <div className="flex justify-between items-center mb-1">
+        <h1 className="font-bold uppercase">Search | Filter</h1>
+        <Button size="sm" variant="default" className="text-white border rounded-full font-bold uppercase" onClick={handleClearFilter}>Clear</Button>
+      </div>
+      <div className="flex flex-col lg:flex-row justify-between gap-2 align-middle">
+
+        <div className="relative my-2 lg:my-1">
+          <Label className="font-semibold">Enter tracking ID</Label>
+          <Search className="absolute left-2 top-2/3 lg:top-[47%] -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            id="trackingId"
+            type="search"
+            // placeholder="Enter tracking ID"
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-8 w-[230px] mt-1.5"
+          />
         </div>
-        <div className="flex flex-col lg:flex-row justify-between gap-2 align-middle">
-
-            <div className="relative my-2 lg:my-1">
-              <Label>Enter tracking ID</Label>
-                <Search className="absolute left-2 top-2/3 lg:top-[47%] -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                <Input
-                id="trackingId"
-                type="search"
-                // placeholder="Enter tracking ID"
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                className="pl-8 w-[230px] mt-1.5"
-                />
-            </div>
 
 
-            <div className="flex gap-1 align-middle justify-between">
-                <Label className="">Status</Label>
-                <Select
-                onValueChange={handleStatusChange}
-                value={selectedStatus}
-                >
-                <SelectTrigger className="w-[120px] my-1 lg:my-6.5">
-                    <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                    <SelectLabel>Status</SelectLabel>
-                    {statusOptions.map((item) => (
-                        <SelectItem key={item.value} value={item.value}>
-                        {item.label}
-                        </SelectItem>
-                    ))}
-                    </SelectGroup>
-                </SelectContent>
-                </Select>
-            </div>
-            <div className="flex gap-1 justify-between">
-                <Label className="">Type</Label>
-                <Select
-                onValueChange={handleTypeChange}
-                value={selectedType}
-                >
-                <SelectTrigger className="w-[120px] my-1 lg:my-6.5">
-                    <SelectValue placeholder="Select Type" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                    <SelectLabel>Type</SelectLabel>
-                    {typeOptions.map((item) => (
-                        <SelectItem key={item.value} value={item.value}>
-                        {item.label}
-                        </SelectItem>
-                    ))}
-                    </SelectGroup>
-                </SelectContent>
-                </Select>
-            </div>
-            <div className="flex gap-1 justify-between">
-                <Label>Sort</Label>
-                <Select onValueChange={handleSortChange} value={selectedSort}>
-                    <SelectTrigger className="w-[120px] my-1 lg:my-6.5">
-                    <SelectValue placeholder="Select Sort"/>
-                    </SelectTrigger>
-                    <SelectContent>
-                    <SelectGroup>
-                        <SelectLabel>Sort</SelectLabel>
-                        {sortOptions.map((item) => (
-                        <SelectItem key={item.value} value={item.value}>
-                            {item.label}
-                        </SelectItem>
-                        ))}
-                    </SelectGroup>
-                    </SelectContent>
-                </Select>
-            </div>
-
-            
-
+        <div className="flex gap-1 align-middle justify-between">
+          <Label className="font-semibold">Status</Label>
+          <Select
+            onValueChange={handleStatusChange}
+            value={selectedStatus}
+          >
+            <SelectTrigger className="w-[120px] my-1 lg:my-6.5">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Status</SelectLabel>
+                {statusOptions.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
+        <div className="flex gap-1 justify-between">
+          <Label className="font-semibold">Type</Label>
+          <Select
+            onValueChange={handleTypeChange}
+            value={selectedType}
+          >
+            <SelectTrigger className="w-[120px] my-1 lg:my-6.5">
+              <SelectValue placeholder="Select Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Type</SelectLabel>
+                {typeOptions.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex gap-1 justify-between">
+          <Label className="font-semibold">Sort</Label>
+          <Select onValueChange={handleSortChange} value={selectedSort}>
+            <SelectTrigger className="w-[120px] my-1 lg:my-6.5">
+              <SelectValue placeholder="Select Sort" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Sort</SelectLabel>
+                {sortOptions.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+
+
+
+      </div>
     </div>
   );
 }
