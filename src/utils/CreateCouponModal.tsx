@@ -62,8 +62,8 @@ export function CreateCouponModal() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant={"default"} size="sm" className="hover:bg-blue-600 dark:hover:bg-blue-700 text-white">
-                    CREATE
+                <Button className="my-8 text-white">
+                    CREATE COUPON
                 </Button>
             </DialogTrigger>
 

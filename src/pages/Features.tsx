@@ -67,7 +67,7 @@ export default function Features({
         <p className="mb-4 text-xs text-muted-foreground md:pl-5">
           {subheading}
         </p>
-        <h2 className="text-3xl font-medium md:pl-5 lg:text-4xl">{heading}</h2>
+        <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-10 uppercase">{heading}</h1>
         <div className="mx-auto mt-14 grid gap-x-20 gap-y-8 md:grid-cols-2 md:gap-y-6 lg:mt-20">
           {features.map((feature, idx) => (
             <div className="flex gap-6 rounded-lg md:block md:p-5" key={idx}>

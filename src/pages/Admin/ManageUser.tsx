@@ -91,7 +91,7 @@ export default function ManageUser() {
     return (
         <div className="w-full max-w-7xl mx-auto px-5">
             <div className="flex justify-between my-8">
-                <h1 className="text-4xl font-semibold text-orange-500 dark:text-orange-400">USER : {data ? total : 0}</h1>
+                <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 uppercase">USER : {data ? total : 0}</h1>
 
 
                 {/* ⬇️ Role filter */}

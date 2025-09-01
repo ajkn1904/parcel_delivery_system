@@ -91,7 +91,7 @@ export default function CreateParcel() {
 
     return (
         <div className="w-[90%] max-w-3xl mx-auto mt-8 mb-20">
-            <h1 className="text-4xl font-semibold text-orange-500 dark:text-orange-400 mb-10">Create Parcel</h1>
+            <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 uppercase mb-10">Create Parcel</h1>
             <div className=" p-5 border rounded-md">
                 <Form {...form}>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

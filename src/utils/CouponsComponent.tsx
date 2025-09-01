@@ -54,9 +54,9 @@ export default function CouponComponent() {
     }
 
     return (
-        <div className="w-full max-w-7xl mx-auto px-5">
-            <div className="flex justify-between my-8">
-                <h1 className="text-4xl font-semibold text-orange-500 dark:text-orange-400">COUPON : {data ? total : 0}</h1>
+        <div className="w-full max-w-6xl mx-auto px-5">
+            <div className="my-8">
+                <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-16">COUPON : {data ? total : 0}</h1>
 
                 <CreateCouponModal />
 

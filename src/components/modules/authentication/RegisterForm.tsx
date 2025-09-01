@@ -61,10 +61,10 @@ export function RegisterForm({
       name: "John Doe",
       email: "john@gmail.com",
       phone: "+8801234567890",
-      role: "receiver",
+      role: "sender",
       address: "Kotwali, Chittagong",
       password: "Abc@123",
-      confirmPassword: "",
+      confirmPassword: "Abc@123",
     },
   });
 
@@ -132,7 +132,7 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
-                  <FormControl>
+                  <FormControl className="bg-gray-50 dark:bg-gray-900">
                     <Input placeholder="John Doe" {...field} />
                   </FormControl>
                   <FormDescription className="sr-only">
@@ -148,7 +148,7 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <FormControl>
+                  <FormControl className="bg-gray-50 dark:bg-gray-900">
                     <Input placeholder="john@example.com" {...field} value={field.value || ""} />
                   </FormControl>
                   <FormMessage />
@@ -163,7 +163,7 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
-                  <FormControl>
+                  <FormControl className="bg-gray-50 dark:bg-gray-900">
                     <Phone {...field} />
                   </FormControl>
                   <FormDescription className="sr-only">
@@ -179,7 +179,7 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Role</FormLabel>
-                  <FormControl>
+                  <FormControl className="bg-gray-50 dark:bg-gray-900">
                     <Select
                       value={field.value}
                       onValueChange={field.onChange}
@@ -209,7 +209,7 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Address</FormLabel>
-                  <FormControl>
+                  <FormControl className="bg-gray-50 dark:bg-gray-900">
                     <Textarea {...field} />
                   </FormControl>
                   <FormMessage />
@@ -222,7 +222,7 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password (e.g. Abc@123)</FormLabel>
-                  <FormControl>
+                  <FormControl className="bg-gray-50 dark:bg-gray-900">
                     <Password {...field} />
                   </FormControl>
                   <FormDescription className="sr-only">
@@ -238,7 +238,7 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
-                  <FormControl>
+                  <FormControl className="bg-gray-50 dark:bg-gray-900">
                     <Password {...field} />
                   </FormControl>
                   <FormDescription className="sr-only">
@@ -264,7 +264,7 @@ export function RegisterForm({
           onClick={() => window.open(`${config.baseUrl}/auth/google`)}
           type="button"
           variant="outline"
-          className="w-full cursor-pointer"
+          className="w-full cursor-pointer bg-gray-50 dark:bg-gray-900"
         >
           Continue with Google
         </Button>

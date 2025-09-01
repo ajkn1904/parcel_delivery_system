@@ -46,7 +46,7 @@ export default function FAQ({
       <div className="container">
         <div className="text-center">
           <Badge className="text-xs font-medium dark:text-foreground">{badge}</Badge>
-          <h1 className="mt-4 text-4xl font-semibold">{heading}</h1>
+          <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-10 uppercase">{heading}</h1>
           <p className="mt-6 font-medium text-muted-foreground">
             {description}
           </p>

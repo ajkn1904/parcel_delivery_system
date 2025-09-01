@@ -69,7 +69,7 @@ export default function Parcel() {
         <div className="w-full max-w-6xl mx-auto px-5">
             <div className="flex justify-between lg:items-center my-8">
                 <div>
-                    <h1 className="text-3xl lg:text-4xl font-semibold text-orange-500 dark:text-orange-400">
+                    <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-16">
                         PARCEL: {total}
                     </h1>
                     <Button className="my-8 text-white">

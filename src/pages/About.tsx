@@ -97,7 +97,7 @@ export default function About({
     <section className="container py-32 scale-x-[0.90]">
       <div className="container">
         <div className="mb-14 grid gap-5 text-center md:grid-cols-2 md:text-left">
-          <h1 className="text-5xl font-semibold">{title}</h1>
+          <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-10 uppercase">{title}</h1>
           <p className="text-muted-foreground">{description}</p>
         </div>
         <div className="grid gap-7 lg:grid-cols-3">
