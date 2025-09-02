@@ -141,7 +141,7 @@ export default function ManageParcel() {
                                             variant="outline"
                                             size="sm"
                                             className={`${activeRow === parcel._id || hoveredRow === parcel._id ? "bg-orange-400 text-white" : "text-orange-400"} hover:bg-orange-600 dark:hover:bg-orange-500 hover:text-white`}
-                                            onClick={() => navigate(`/tracking/${parcel._id}`)}
+                                            onClick={() => navigate(`/tracking/${parcel._id}`, { state: { trackingId: parcel.trackingId } })}
                                         >
                                             TRACK
                                         </Button>

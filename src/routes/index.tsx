@@ -18,6 +18,7 @@ import { receiverSidebarItems } from './receiverSidebarItems'
 import Tracking from '@/pages/Tracking'
 import CreateParcel from '@/components/modules/sender/CreateParcel'
 import Unauthorized from '@/pages/Unauthorized'
+import NotFound from '@/pages/NotFound'
 
 export const router = createBrowserRouter([
     {
@@ -53,12 +54,12 @@ export const router = createBrowserRouter([
                 path: "/register"
             },
             {
-                Component: Unauthorized,
-                path: "/unauthorized"
+                Component: NotFound,
+                path: "*"
             },
             {
                 Component: Unauthorized,
-                path: "*"
+                path: "/unauthorized"
             },
             
             {

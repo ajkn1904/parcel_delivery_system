@@ -100,7 +100,7 @@ export function ParcelModal({ parcelData, activeRow, hoveredRow }: { parcelData:
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            <div className="text-center mb-4 text-2xl uppercase">Update Parcel Status</div>
+            <div className="text-center mb-4 text-2xl text-orange-500 dark:text-orange-400 uppercase">Update Parcel Status</div>
             <div className="text-start my-2">
               Tracking ID: <span className="font-light"> {parcelData?.trackingId}</span>
             </div>

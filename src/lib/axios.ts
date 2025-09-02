@@ -1,6 +1,7 @@
 import config from "@/config";
 import type { AxiosRequestConfig } from "axios";
 import axios from "axios";
+import { toast } from "sonner";
 
 export const axiosInstance = axios.create({
   baseURL: config.baseUrl,
@@ -56,7 +57,7 @@ axiosInstance.interceptors.response.use(
       error.response.data.message === "jwt expired" &&
       !originalRequest._retry
     ) {
-      console.log("Your token is expired");
+      toast.error("Your token is expired. Please, login again.");
 
       originalRequest._retry = true;
 
@@ -70,8 +71,9 @@ axiosInstance.interceptors.response.use(
 
       isRefreshing = true;
       try {
-        const res = await axiosInstance.post("/auth/refresh-token");
-        console.log("New Token arrived", res);
+        //const res = await axiosInstance.post("/auth/refresh-token");
+        await axiosInstance.post("/auth/refresh-token");
+        //console.log("New Token arrived", res);
 
         processQueue(null);
 

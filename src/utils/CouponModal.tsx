@@ -75,12 +75,12 @@ export function CouponModal({ id, code, discountPercentage, expiryDate, activeRo
 
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle className="uppercase">
+                    <DialogTitle className="text-orange-500 dark:text-orange-400 text-center uppercase">
                         Update Coupon
-                        <div className="text-start my-2">
-                            Code: <span className="font-light"> {code}</span>
-                        </div>
                     </DialogTitle>
+                    <div className="text-start my-2">
+                        Code: <span className="font-light"> {code}</span>
+                    </div>
                 </DialogHeader>
 
                 <DialogDescription></DialogDescription>

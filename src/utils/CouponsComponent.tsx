@@ -81,7 +81,7 @@ export default function CouponComponent() {
                             <TableRow key={coupon._id} onClick={() => setActiveRow(coupon._id)}
                                 onMouseEnter={() => setHoveredRow(coupon._id)}
                                 onMouseLeave={() => { setActiveRow(null); setHoveredRow(null) }}
-                                className={`cursor-pointer ${(activeRow === coupon._id) ? "bg-blue-500 dark:bg-gray-600" : "hover:bg-blue-100 hover:text-black dark:hover:bg-gray-800 dark:hover:text-white"} ${new Date() <= new Date(coupon?.expiryDate) ? 'bg-red-500/20 hover:bg-red-500/50' : ''}`} >
+                                className={`cursor-pointer ${(activeRow === coupon._id) ? "bg-blue-500 dark:bg-gray-600" : "hover:bg-blue-100 hover:text-black dark:hover:bg-gray-800 dark:hover:text-white"} ${new Date() <= new Date(coupon?.expiryDate) ? '' : 'bg-red-500/20 hover:bg-red-500/50'}`} >
                                 <TableCell className="font-medium border-r-2">{(currentPage - 1) * couponsPerPage + index + 1}</TableCell>
                                 <TableCell className="font-medium">
                                     {coupon?.code}
@@ -92,8 +92,9 @@ export default function CouponComponent() {
                                 <TableCell className="font-medium">
                                     {
                                         (new Date() <= new Date(coupon?.expiryDate)) ?
-                                            'EXPIRED' :
                                             <>{new Date(coupon?.expiryDate).toDateString()}</>
+                                            :
+                                            'EXPIRED'
                                     }
                                 </TableCell>
                                 <TableCell className="font-medium text-center">

@@ -69,7 +69,7 @@ export function CreateCouponModal() {
 
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle className="uppercase">
+                    <DialogTitle className="text-orange-500 dark:text-orange-400 text-center uppercase">
                         Create New Coupon
                     </DialogTitle>
                 </DialogHeader>

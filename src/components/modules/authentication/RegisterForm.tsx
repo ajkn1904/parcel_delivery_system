@@ -163,8 +163,8 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
-                  <FormControl className="bg-gray-50 dark:bg-gray-900">
-                    <Phone {...field} />
+                  <FormControl>
+                    <Phone {...field}/>
                   </FormControl>
                   <FormDescription className="sr-only">
                     This is your phone number.
@@ -179,12 +179,12 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Role</FormLabel>
-                  <FormControl className="bg-gray-50 dark:bg-gray-900">
+                  <FormControl className="">
                     <Select
                       value={field.value}
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger className="w-[300px]">Role
+                      <SelectTrigger className="w-[300px] bg-gray-50 dark:bg-gray-900">Role
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>

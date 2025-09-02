@@ -1,5 +1,8 @@
 // AboutPage.tsx
 import React from "react";
+import user  from '@/assets/images/user.jpg'
+import mission from '@/assets/images/mission.png'
+
 
 interface TeamMember {
   name: string;
@@ -9,9 +12,9 @@ interface TeamMember {
 }
 
 const teamMembers: TeamMember[] = [
-  { name: "Alice Johnson", role: "CEO", image: "/src/assets/images/user.jpg", social: { linkedin: "https://linkedin.com/in/alice" } },
-  { name: "Bob Smith", role: "CTO", image: "/src/assets/images/user.jpg", social: { github: "https://github.com/bobsmith" } },
-  { name: "Carol Lee", role: "Operations Manager", image: "/src/assets/images/user.jpg" },
+  { name: "Alice Johnson", role: "CEO", image: user, social: { linkedin: "https://linkedin.com/in/alice" } },
+  { name: "Bob Smith", role: "CTO", image: user, social: { github: "https://github.com/bobsmith" } },
+  { name: "Carol Lee", role: "Operations Manager", image: user },
 ];
 
 const AboutPage: React.FC = () => {
@@ -47,7 +50,7 @@ const AboutPage: React.FC = () => {
           </div>
           <div>
             <img
-              src="/src/assets/images/mission.png"
+              src={mission}
               alt="Mission illustration"
               className="rounded-xl shadow-lg hover:scale-105 transform transition-transform"
             />

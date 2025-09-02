@@ -38,7 +38,7 @@ export default function BlockOrCancelOrDeleteConfirmation({
         <AlertDialogHeader>
         <AlertDialogTitle>
           Are you sure you want to {actionText} this{" "}
-          <span className="font-bold">{customTitle}</span>
+          <span className="font-bold">‛{customTitle}’</span>
         </AlertDialogTitle>
           <AlertDialogDescription>
             {customDescription ||
