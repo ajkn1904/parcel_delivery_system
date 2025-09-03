@@ -1,69 +1,128 @@
-# React + TypeScript + Vite
+# Parcel Delivery System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### **🎯 Project Overview**
 
-Currently, two official plugins are available:
+**secure, role-based, and user-friendly** frontend application for a **Parcel Delivery System** (similar to Pathao Courier or Sundarban) using **`Recact.js`** with **`TypeScript`** for type safety, **`TailwindCSS`** with **`ShadcnUI`** as the css libraries, and **`Redux Toolkit Query (RTK Query)`** for `State` & `API` handling.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The system will allow users to register as sender or receiver and perform parcel delivery operations such as **create parcel**, **track status**, and **cancel or receive parcels**.
 
-## Expanding the ESLint configuration
+The main goal is to build a functional and clean client-side application that interacts with a RESTful API, demonstrating proper state management, UI design, and core functionality.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🔏 Credentials
+**ADMIN**
+Email: `admin@gmail.com`
+Password: `123456` 
+
+**SENDER**
+Email: `sender@gmail.com`
+Password: `Abc@123` 
+
+**RECEIVER**
+Email: `receiver@gmail.com`
+Password: `Abc@123` 
+
+
+Visit here: [Parcel Delivery System](https://parcel-delivery-system-green.vercel.app/)
+
+
+---
+
+
+## 🛠️ Technology Stack  
+
+| Category | Tools |
+|---------|-------|
+| ⚛️ Library | React.js |
+| 🧠 Language | TypeScript |
+| 🎨 Styling | Tailwind CSS, shadcn/ui |
+| 🔄 State Management | Redux Toolkit, RTK Query |
+| ⚙️ Build Tool | Vite |
+| 🚀 Deployment | Vercel |
+| 🧹 Linting | ESLint, Prettier |
+| 📦 Others | React Router, Axios/Fetch, Lucide-react (icons) |
+
+
+---
+
+
+## 🔑 Key Features
+
+- 🔐 Authentication & role-based Authorization (`admin`, `sender`, `receiver`)
+- 🎭 Role-based *Dashboard*
+- ❇️ Transactional Logic
+- 🛠️ Parcel & Status Management
+- ♾️ Tracking with status logs (status, timestamp, updatedBy, note)
+- 📈 Statistical summary & history.
+- 🔎 Searching & Filtering features
+- 🔁 Pagination feature.
+
+
+---
+
+
+## 🧱 Installation & Setup Process
+
+### CLI Commands :----------
+
+- `bun create vite 'ProjectName' `
+- `bun install`
+- `bun add react-router react-hook-form`
+- `bun add tailwindcss @tailwindcss/vite`
+- `bun add -D @types/node`
+- `bunx --bun shadcn@latest init`
+- `bun add @reduxjs/toolkit react-redux`
+- `bun add axios`
+
+
+### At `index.css` :----------
+```css
+@import "tailwindcss";
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### At `tsconfig.json` :----------
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```json
+// ...,
+"compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+// ...
+```
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
+### At `tsconfig.app.json` :----------
+
+```json
+"compilerOptions": {
+    // ...
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+    // ...
+}
+```
+
+## At `vite.config.ts` :----------
+
+```ts
+import path from "path";
+import tailwindcss from "@tailwindcss/vite";
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
     },
   },
-])
+});
 ```
