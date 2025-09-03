@@ -149,7 +149,7 @@ export function CouponModal({ id, code, discountPercentage, expiryDate, activeRo
                     <DialogClose asChild>
                         <Button variant="outline" className="uppercase" onClick={() => form.reset()}>Cancel</Button>
                     </DialogClose>
-                    <Button type="submit" form="status-log" className="text-white uppercase" disabled={formState.isDirty}>
+                    <Button type="submit" form="status-log" className="text-white uppercase" disabled={!formState.isDirty}>
                         Save
                     </Button>
                 </DialogFooter>
